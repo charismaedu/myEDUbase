@@ -1,0 +1,12 @@
+[Connection]
+Type="mysql"
+Host="127.0.0.1"
+Port="3306"
+User="chaedu"
+RememberPassword=True
+IgnoreCharset=False
+DisplayMetadata=False
+RememberTemplate=False
+Database="charismaedu"
+Requests=["Select * from tblclasses where clsid=30\n","/* New query */\nSelect Distinct s.stuid , LPAD(s.stuid,8,\"0\") as stubarcode, s.stuengfamname,  DATE_FORMAT(s.studob, '%d %b %y') as studob, \nconcat(\"/home/steven-charisma/ownCloud/documents/Database/Student Cards/Student Photos/\",s.stupic) as stupic\nFrom tblstudents s Inner Join tblclsstudent c ON s.stuid = c.stuid\nWhere c.current = 1\n","Select Distinct s.stuid , LPAD(s.stuid,8,\"0\") as stubarcode, s.stuengfamname,  DATE_FORMAT(s.studob, '%d %b %y') as studob, \nconcat(\"/home/steven-charisma/ownCloud/documents/Database/Student Cards/Student Photos/\",s.stupic) as stupic\nFrom tblstudents s Inner Join tblclsstudent c ON s.stuid = c.stuid\nWhere c.current = 1 and s.stuprint = -1"]
+

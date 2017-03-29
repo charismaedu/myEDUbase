@@ -1,9 +1,9 @@
 # Gambas Project File 3.0
-# Compiled with Gambas 3.9.1
+# Compiled with Gambas 3.9.2
 Title=Charsima Database
 Startup=frmlogin
 Icon=LogoLg.png
-Version=0.28.12
+Version=0.28.13
 Component=gb.image
 Component=gb.gtk
 Component=gb.form

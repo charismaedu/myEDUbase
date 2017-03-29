@@ -3,7 +3,7 @@
 Title=Charsima Database
 Startup=frmlogin
 Icon=LogoLg.png
-Version=0.28.13
+Version=0.29.13
 Component=gb.image
 Component=gb.gtk
 Component=gb.form

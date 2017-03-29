@@ -1,0 +1,94 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,92,43)
+  Background = &H007FFF&
+  Text = ("Charisma Education - Send SMS")
+  Icon = Picture["LogoLg.png"]
+  { Label1 Label
+    MoveScaled(1,2,7,4)
+    Text = ("Sender:")
+  }
+  { txtsender MaskBox
+    MoveScaled(8,2,24,4)
+    Text = ("CharismaEDU")
+    ReadOnly = True
+    Mask = "???????????"
+  }
+  { Label2 Label
+    MoveScaled(1,15,4,3)
+    Text = ("To:")
+  }
+  { txtuser TextBox
+    MoveScaled(1,30,28,4)
+    Visible = False
+  }
+  { txtpwd TextBox
+    MoveScaled(30,30,42,4)
+    Visible = False
+    Password = True
+  }
+  { radeng RadioButton
+    MoveScaled(33,2,12,4)
+    Text = ("English")
+  }
+  { radoth RadioButton
+    MoveScaled(44,2,12,4)
+    Text = ("Other")
+  }
+  { lblcount Label
+    MoveScaled(66,32,21,4)
+  }
+  { !txtmessage TextArea
+    MoveScaled(8,19,79,12)
+    #Public = True
+    Font = Font["Source Han Sans TW,11"]
+    Wrap = True
+    ScrollBar = Scroll.Vertical
+  }
+  { btnsend Button
+    MoveScaled(72,36,16,4)
+    Text = Shortcut(("Send"), "S")
+  }
+  { lblbal Label
+    MoveScaled(57,2,29,4)
+    Alignment = Align.Right
+  }
+  { lbllastresult Label
+    MoveScaled(7,33,53,3)
+  }
+  { cbomessage ComboBox
+    MoveScaled(42,14,37,4)
+    List = [("School Fees"), ("Black Rain"), ("Pre T8"), ("T8"), ("Other Signal")]
+  }
+  { btnadd Button
+    MoveScaled(80,14,8,4)
+    Text = Shortcut(("Add"), "A")
+  }
+  { !txtto TextBox
+    MoveScaled(8,14,32,4)
+    #Public = True
+    ToolTip = ("A comma seperated list of numbers.")
+  }
+  { chkbroadcast CheckBox
+    MoveScaled(2,7,24,4)
+    Text = ("Broadcast")
+  }
+  { pnlbroadcast Panel
+    MoveScaled(17,7,71,6)
+    Visible = False
+    { radcurrent RadioButton
+      MoveScaled(2,1,24,4)
+      Text = ("Current Students")
+    }
+    { cboday ComboBox
+      MoveScaled(26,1,24,4)
+      List = [("All"), ("Monday"), ("Tuesday"), ("Wednesday"), ("Thursday"), ("Friday"), ("Saturday"), ("Sunday")]
+      Text = ("All")
+    }
+  }
+  { prgbroadcast ProgressBar
+    MoveScaled(6,36,64,4)
+    Visible = False
+  }
+}

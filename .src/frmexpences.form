@@ -1,0 +1,152 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,149,69)
+  { cnnexp DataSource
+    MoveScaled(1,1,146,68)
+    Table = "tblexpences"
+    { expid DataControl
+      MoveScaled(25,6,5,4)
+      Enabled = False
+      Field = "expid"
+    }
+    { expdate DataControl
+      MoveScaled(31,6,18,4)
+      Field = "expdate"
+    }
+    { expamountorg DataControl
+      MoveScaled(60,6,14,4)
+      Field = "expamountorg"
+    }
+    { Label2 Label
+      MoveScaled(50,6,9,4)
+      Text = ("Amount:")
+    }
+    { expcur DataControl
+      MoveScaled(86,6,6,4)
+      Field = "expcur"
+    }
+    { Label4 Label
+      MoveScaled(75,6,10,4)
+      Text = ("Currency:")
+    }
+    { expconv DataControl
+      MoveScaled(100,6,14,4)
+      Field = "expconv"
+    }
+    { Label5 Label
+      MoveScaled(93,6,6,4)
+      Text = ("Conv:")
+    }
+    { Label6 Label
+      MoveScaled(115,6,11,4)
+      Text = ("Conv Amt:")
+    }
+    { expamount DataControl
+      MoveScaled(126,6,17,4)
+      Enabled = False
+      Field = "expamount"
+    }
+    { Label8 Label
+      MoveScaled(25,12,9,4)
+      Text = ("Auth By:")
+    }
+    { exppath DataControl
+      MoveScaled(68,12,46,4)
+      Enabled = False
+      Field = "exppath"
+    }
+    { Label10 Label
+      MoveScaled(55,12,13,4)
+      Text = ("Reciept Path:")
+    }
+    { expimage DataControl
+      MoveScaled(131,11,12,10)
+      Field = "expimage"
+    }
+    { btnudate Button
+      MoveScaled(25,17,16,4)
+      Visible = False
+      Text = Shortcut(("Update"), "U")
+    }
+    { expbalanced DataCheckBox
+      MoveScaled(43,17,14,4)
+      Enabled = False
+      Text = ("Balanced")
+      Field = "expbalanced"
+    }
+    { broexpen DataBrowser
+      MoveScaled(1,1,23,65)
+      CanCreate = False
+      Columns = ["expdate", "expamount"]
+    }
+    { picexpimage PictureBox
+      MoveScaled(116,11,11,11)
+      Drop = True
+      Picture = Picture["LogoLg.png"]
+      Stretch = True
+    }
+    { lblbalance Label
+      MoveScaled(59,17,55,6)
+      Font = Font["URW Gothic L,Bold,+5"]
+      Foreground = Color.DarkBlue
+    }
+    { expauth DataCombo
+      MoveScaled(34,12,19,4)
+      Field = "usrid"
+      Table = "tblusers"
+      Display = "usrdispname"
+    }
+  }
+  { cnnexpdet DataSource
+    MoveScaled(27,26,119,43)
+    Visible = False
+    Table = "tblexpdetail"
+    { detexpid DataControl
+      MoveScaled(2,1,8,4)
+      Enabled = False
+      Field = "detexpid"
+    }
+    { expidlnk DataControl
+      MoveScaled(2,6,8,4)
+      Field = "expid"
+    }
+    { catid DataCombo
+      MoveScaled(21,1,36,4)
+      Field = "catid"
+      Table = "tblcatagories"
+      Display = "catname"
+    }
+    { detdescription DataControl
+      MoveScaled(21,6,69,6)
+      Field = "detdescription"
+    }
+    { detamount DataControl
+      MoveScaled(92,8,25,4)
+      Field = "detamount"
+    }
+    { detlastmod DataControl
+      MoveScaled(59,1,37,4)
+      Enabled = False
+      Field = "detlastmod"
+    }
+    { btnnewdet Button
+      MoveScaled(100,33,16,4)
+      Text = Shortcut(("New"), "N")
+    }
+    { btnupdatedet Button
+      MoveScaled(100,2,16,4)
+      Text = Shortcut(("Update"), "U")
+    }
+    { detbrowser DataBrowser
+      MoveScaled(2,13,92,26)
+      CanCreate = False
+      Columns = ["detdescription", "catid", "detamount"]
+      Labels = ["Description", "Catagory", "Amount"]
+    }
+  }
+  { btnnew Button
+    MoveScaled(26,2,16,4)
+    Text = Shortcut(("New"), "N")
+  }
+}

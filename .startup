@@ -1,0 +1,25 @@
+frmlogin
+Charsima Database
+0
+0
+0.28.12
+
+gb.image
+gb.gtk
+gb.form
+gb.data
+gb.db
+gb.db.form
+gb.db.mysql
+gb.desktop.x11
+gb.desktop
+gb.settings
+gb.image.effect
+gb.net
+gb.net.curl
+gb.net.smtp
+gb.openssl
+gb.report2
+gb.scanner
+gb.web
+

@@ -1,0 +1,39 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,64,64)
+  { cnntypes DataSource
+    MoveScaled(0,1,63,62)
+    Table = "tbltypes"
+    { typkey DataControl fields
+      Name = "typkey"
+      MoveScaled(10,6,22,4)
+      Field = "typkey"
+    }
+    { typvalue DataControl fields
+      Name = "typvalue"
+      MoveScaled(34,6,25,4)
+      Field = "typvalue"
+    }
+    { DataBrowser1 DataBrowser
+      MoveScaled(2,17,59,43)
+      CanCreate = False
+      Columns = ["typkey", "typvalue"]
+      Labels = ["Key", "Value"]
+    }
+    { btnnew Button
+      MoveScaled(2,12,16,4)
+      Text = Shortcut(("New"), "N")
+    }
+    { btnupdate Button
+      MoveScaled(45,12,16,4)
+      Visible = False
+      Text = Shortcut(("Update"), "U")
+    }
+    { typid DataControl
+      MoveScaled(2,6,6,4)
+      Enabled = False
+      Field = "typid"
+    }
+  }
+}

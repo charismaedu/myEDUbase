@@ -1,0 +1,653 @@
+' Gambas class file
+
+Private smsuser As String
+Private smspass As String
+Private smsbalance As String
+Private Gbal As Process
+Private smsresult As String
+Private cancontinue As Boolean
+
+
+Public Sub btnsend_Click()
+  
+  Dim smsto As String
+  Dim smslang As String
+  Dim smsmsg As String
+  Dim smsfrom As String
+  Dim myresult As String
+  Dim mynos As String[]
+  Dim i As Integer
+  Dim grpten As Integer
+  
+  
+  
+  
+  btnsend.Enabled = False
+  
+  lbllastresult.Text = "Sending ..."
+  lbllastresult.Tag = ""
+  Me.Refresh
+  
+
+  
+ 'create messages in groups of ten
+ 
+ 'find ten numbers or less group them in each email
+ 'they are only can be seperated by crlf - need to put error checking for wrong numbers.
+ 
+ '1. Split string into numbers
+ 
+ mynos = Split(txtto.Text, "\n")
+
+ 
+ '2. Check that each string is only numbers and 11 chars long (assumingHK nos) if only 8 append 852 else remove and report and exit program
+ 
+ '3. Send message in groups of ten
+ 
+ 
+  'sending  messages  - set up
+  smsfrom = Url$(Left(txtsender.Text, 11))
+ 
+ 
+  smsto = Replace(txtto.Text, " ", "")
+  
+  smsmsg = txtmessage.Text
+  
+  If radeng.Value = True Then
+    smslang = "1"
+  Else
+    smslang = "2"
+  Endif
+ 
+ 'loop through nos
+
+
+ ' For i = 0 To mynos.Max
+ '  For grpten = 1 To 10
+ '    'check if max reached
+ '    smsto = "" 'reset numbers
+ '    If i <= mynos.Max Then 
+ '      'add number to string else we have added all numbers
+ '      'check length
+ '      If Len(mynos[i]) = 8 Then
+ '        'add 852
+ '        mynos[i] = "852" & mynos[i]
+ '      
+ '      Endif
+ '        
+ '      If Len(mynos[i]) = 11 'check if 11 numbers reject if not (if was 8 should be 11 now
+ '        smsto = smsto & mynos[i]  
+ '      
+ '      Else
+ '        
+ '        Message.Error("Number: " & mynos[i] & " is invalid. Not sent!")
+ '                
+ '      Endif
+ '      If smsto <> "" Then 
+ '        sendmsg(smsfrom, smsto, smsmsg, smslang)
+ '      Else
+ '        Message.Error("No numbers found")
+ '          
+ '      Endif
+ '      
+ '      
+ '    Endif
+ '    i += 1
+ '    
+ '  Next
+ '   'If smsto <> "" Then 
+ '   '   sendmsg(smsfrom, smsto, smsmsg, smslang)
+ '   'Else
+ '    '  Message.Error("No numbers found")
+ '          
+ '   'Endif
+ '   
+ ' Next
+ 
+If chkbroadcast.Value = True Then
+  'broadcast meassage
+  sendbroadcast()
+Else
+   'sending  messages  - set up
+  smsfrom = Url$(Left(txtsender.Text, 11))
+ 
+ 
+  smsto = Replace(txtto.Text, " ", "")
+  
+  smsmsg = txtmessage.Text
+  
+  If radeng.Value = True Then
+    smslang = "1"
+  Else
+    smslang = "2"
+  Endif
+  
+  If Len(mynos[i]) = 8 Then
+         'add 852
+         smsto = "852" & txtto.Text
+  Else
+    smsto = txtto.Text
+  End If
+ 
+  sendmsg(smsfrom, smsto, smsmsg, smslang)
+  
+Endif
+ 
+ 
+ 
+ 
+
+  
+ 
+ End
+ 
+ Private Sub sendbroadcast()
+  Dim rsbroadcast As Result
+  Dim myreq As String
+  Dim smsfrom As String
+  Dim smsto As String
+  Dim smslang As String
+  Dim smsmsg As String
+ ' Dim smsfrom As String
+  Dim curcount As Long
+  Dim dayid As String
+  
+  
+  'send a boradcast, will eventally have sql and filtering
+   'sending  messages  - set up
+  smsfrom = Url$(Left(txtsender.Text, 11))
+ 
+ 
+  
+  
+  smsmsg = txtmessage.Text
+  
+  If radeng.Value = True Then
+    smslang = "1"
+  Else
+    smslang = "2"
+    
+  End If
+  'open connectiona and create list
+  'set sql
+  
+  'myreq = "Select Distinct tblstudents.stuid, stuconmobphone,  From tblstudents JOIN tblclsstudent On tblstudents.stuid = tblclsstudent.stuid Where stuconmobphone Is Not Null And current = True"
+  'myreq = "Select Distinct tblstudents.stuid, stuconmobphone From tblstudents JOIN tblclsstudent On tblstudents.stuid = tblclsstudent.stuid Where stuconmobphone Is Not Null And current = True Order By tblstudents.stuid"
+  Select Case cboday.Text
+    Case "All"
+      dayid = "0"
+    Case "Monday"
+      dayid = "1"
+    Case "Tuesday"
+      dayid = "2"
+    
+    Case "Wednesday"
+      dayid = "3"
+    
+    Case "Thursday"
+      dayid = "4"
+      
+    Case "Friday"
+      dayid = "5"
+    
+    Case "Saturday"
+      dayid = "6"
+      
+    Case "Sunday"
+      dayid = "7"
+      
+    Case Else
+    
+      dayid = "error"  
+  
+  End Select
+  
+  
+  
+  
+  If dayid <> "error" Then
+      myreq = "select distinct tblstudents.stuid, tblstudents.stuengfamname, tblstudents.stuconmobphone From tblstudents INNER JOIN(tblclsstudent Inner Join tblclasses On tblclsstudent.clsid = tblclasses.clsid) On tblstudents.stuid = tblclsstudent.stuid Where current = True"
+      
+      If dayid <> 0 Then 'add day resriction
+        myreq = myreq & " And dayid = " & dayid
+      End If
+     Message.Info(myreq) 
+     rsbroadcast = basroutines.getconnection().Exec(myreq)
+     Message.Info(rsbroadcast.Count)
+    'Message.Info(rsbroadcast.Count)
+    'prgbroadcast.Pulse = True
+    
+    prgbroadcast.Value = 0
+    prgbroadcast.Visible = True 
+    curcount = 0
+    For Each rsbroadcast
+      'loop through result
+      smsto = Replace(Trim(rsbroadcast["stuconmobphone"]), " ", " ")
+      smsto = Replace(smsto, "+", "")
+      txtto.Text = smsto
+      txtto.tag = rsbroadcast["stuid"]
+      'cancontinue = False
+      Wait 0.05
+      sendmsg(smsfrom, smsto, smsmsg, smslang, False)
+      basroutines.addstunote(CLong(txtto.Tag), "SMS: To: " & smsto & " Message: " & smsmsg & " " & smsresult)
+      curcount += 1
+      prgbroadcast.Refresh
+      prgbroadcast.Value = curcount / rsbroadcast.Count
+      Me.Refresh
+      Wait 0.05
+      
+      
+    Next
+    
+  Else
+    Message.Info("invalid")
+  Endif
+  
+  'myreq = "Select stuid, stuconmobphone From tblsmstest"
+ 
+  
+  prgbroadcast.Visible = False
+  btnsend.Enabled = True
+  
+  '
+  
+End
+
+ 
+ 
+Private Sub sendmsg(smssender As String, smsto As String, smsmsg As String, smslang As String, Optional async As Boolean = True)
+  Dim myresult As String
+  Dim smsURL As String
+  Dim smsbase As String
+  Dim smsquery As String
+  
+  ' smsmsg = Replace(smsmsg, ":", "-")
+  ' smsmsg = Replace(smsmsg, gb.cr, "+")
+  ' smsmsg = Replace(smsmsg, gb.lf, "+")
+  ' smsmsg = Replace(smsmsg, "/", "-")
+  ' smsmsg = Replace(smsmsg, "/", "-")
+  ' 
+  
+  
+  
+  'smsmsg = Replace(smsmsg, " ", "+")
+ 
+ If smslang = "1" Then
+    'smsmsg = Url$(smsmsg)
+    'smsmsg = Replace(smsmsg, "/", "")
+    
+      
+ Endif
+ 
+  smsbase = "http://gateway.onewaysms.hk:10002/api.aspx"
+  
+ 
+ 
+  If smslang = "2" Then
+    'convert text
+    'smsmsg = Url$(DConv(smsmsg))
+    
+    'smsmsg = Replace(smsmsg, "%", "")
+    'Exec ["printf", "'%x\n'", CStr(string.Code("德"))] To myresult
+    smsbase = "http://gateway.onewaysms.hk:10002/apichinese.aspx"
+    
+    'smsmsg = "'" & smsmsg & "'"
+    'smsmsg = Url$(gethex(smsmsg, 4))
+    'smsmsg = Url$(smsmsg)
+   
+    'http://gateway.onewaysms.hk:10002/apichinese.aspx
+    
+  Endif
+  
+  
+ 
+  'smsquery = smsquery & "&senderid=" & smssender & "&mobileno=" & smsto & "&languagetype=" & smslang & "&message=" & smsmsg
+  'smsquery = "apiusername=" & smsuser & "&apipassword=" & smspass
+  smsquery = URL.SetQuery(smsbase, "apiusername", smsuser)
+  smsquery = URL.SetQuery(smsquery, "apipassword", smspass)
+  smsquery = URL.SetQuery(smsquery, "senderid", smssender)
+  smsquery = URL.SetQuery(smsquery, "mobileno", smsto)
+  smsquery = URL.SetQuery(smsquery, "languagetype", smslang)
+  smsquery = URL.SetQuery(smsquery, "message", smsmsg)
+  
+  
+  
+  smsurl = smsquery
+  'message(smsurl)
+  'smsurl = "wget " & smsurl
+  If async Then
+    smsresult = ""
+    Exec ["curl", smsurl] For Read As "sendsms" 'returns the tranid/error code
+  Else
+    'syncronous
+    Exec ["curl", smsurl] To smsresult
+    smsresult = "Message ID: " & smsresult
+  Endif 
+  
+  
+  
+   
+  
+  ' .$user." &  ".$pass;
+  '                       $query_string. = "&senderid=".rawurlencode($sms_from)."&mobileno=".rawurlencode($sms_to);
+  '                       $query_string. = "&message=".rawurlencode(stripslashes($sms_msg))."&languagetype=1"; 
+  
+
+  'Sends an sms to someone
+  
+
+End
+Private Sub sendmsgjviop(smssender As String, smsto As String, smsmsg As String, smslang As String, Optional async As Boolean = True)
+  
+  'send using just viop
+  'url = https://www.justvoip.com/myaccount/sendsms.php?username=xxxxxxxxxx&password=xxxxxxxxxx&from=xxxxxxxxxx&to=xxxxxxxxxx&text=xxxxxxxxxx
+  
+  Dim myresult As String
+  Dim smsURL As String
+  Dim smsbase As String
+  Dim smsquery As String
+  
+  
+  smsbase = "https://www.justvoip.com/myaccount/sendsms.php"
+  smsquery = URL.SetQuery(smsbase, "username", smsuser)
+  smsquery = URL.SetQuery(smsquery, "password", smspass)
+  smsquery = URL.SetQuery(smsquery, "from", smssender)
+  smsquery = URL.SetQuery(smsquery, "to", smsto)
+  smsquery = URL.SetQuery(smsquery, "text", smsmsg)
+  
+  smsurl = smsquery
+   If async Then
+    smsresult = ""
+    Exec ["curl", smsurl] For Read As "sendsms" 'returns the tranid/error code
+  Else
+    'syncronous
+    Exec ["curl", smsurl] Wait To smsresult
+    smsresult = "Message ID: " & smsresult
+  Endif 
+  
+End
+
+
+Private Function gethex(org As String, digits As Integer) As String
+ 
+  Dim i As Integer
+  Dim strlen As Integer
+  Dim hexstr As String
+  
+  hexstr = ""
+  strlen = String.Len(org)
+  'loops through string and returns it in hex format
+  If strlen <> 0 Then
+    For i = 1 To strlen
+      hexstr = hexstr & CStr(Hex$(string.Code(String.Mid$(org, i, 1)), digits))
+    Next  
+  Endif
+  Message(hexstr)
+  Return hexstr
+  
+End
+Public Sub addstunote(stuid As Long, curnote As String)
+  
+  
+  
+End
+
+
+
+
+Public Sub Form_Activate()
+
+  updatebalance()
+
+
+End
+
+Private Sub getbalance()
+    Dim smsbase As String
+    Dim smsquery As String
+    Dim smsurl As String
+    Dim myresult As String
+    
+    
+    'gets current balance
+    smsbalance = ""
+    smsbase = "http://gateway.onewaysms.hk:10002/bulkcredit.aspx?"
+    smsquery = "apiusername=" & smsuser & "&apipassword=" & smspass
+    smsurl = smsbase & smsquery
+    Exec ["curl", smsurl] For Read As "Gbal"
+  
+   
+    
+End
+Public Sub updatebalance()
+  
+  'gets the current balance and updates the lablel
+  
+  getbalance()
+  
+End
+
+
+Public Sub Form_Open()
+
+  'set the password and user, this will be done in the database for better security
+  'onewaysms
+  smsuser = "API3W86RUFGOZ"
+  smspass = "API3W86RUFGOZ3W86R"
+  
+  'jviop
+ '  smsuser = "charismaedu"
+ ' smspass = "UWyvwNBJUX8Gt6dV2jVqm6rg"
+  
+  
+
+End
+Public Sub sendsms_Read()
+   
+   Dim sLine As String
+
+ Read #Last, sLine, -256
+
+  smsresult &= sLine
+  
+  
+End
+
+Public Sub sendsms_Kill()
+  Dim mysplresult As String[]
+  Dim failedmsg As String
+  Dim i As Integer
+  Dim upnote As Result
+  
+   
+   
+   lbllastresult.Tag = smsresult
+   
+   If smsresult <> "" Then
+  '  '  mysplresult = Split(smsresult, "',")
+  '  '  
+  '  '  'loop through string
+  '  '  failedmsg = ""
+  '  '  For i = 0 To mysplresult.Count - 1
+  '  '    If Val(mysplresult[i]) < 0 Then
+  '  '      'Message not sent. 
+  '  '      If failedmsg <> "" Then
+  '  '        failedmsg &= "," & smsresult   
+  '  '      Else
+  '  '        failedmsg &= smsresult   
+  '  '      Endif
+  '  '    Endif
+  '  '  Next
+  '  ' Else
+  '  '   'failed
+  '  '  failedmsg = "No response"
+  '   failedmsg = smsresult
+  '  
+  '  
+  '  Endif
+  '  
+  '  
+  '  If failedmsg Then
+  '   'Message not sent. 
+  '   
+  '   smsresult = "Some messages failed: " & failedmsg
+  '   Message(smsresult) 
+  '   
+  ' Else
+    
+    smsresult = "Message ID: " & smsresult
+    'update note
+    If txtto.Tag <> "" Then
+      basroutines.addstunote(CLong(txtto.Tag), "SMS: To: " & txtto.Text & " Message: " & txtmessage.Text & " " & smsresult)
+    End If 
+  End If
+  
+  lbllastresult.Text = smsresult
+  btnsend.Enabled = True
+  updatebalance()
+  cancontinue = True
+  
+End
+
+
+Public Sub Gbal_Read()
+
+  Dim sLine As String
+
+  Read #Last, sLine, -256
+
+  smsbalance = sLine
+
+End
+
+Public Sub Gbal_Kill()
+
+  
+  lblbal.Text = "You can send up to " & smsbalance & " SMS."
+ 
+End
+
+
+Public Sub txtmessage_KeyRelease()
+  Dim chcount As Integer
+  Dim curmsg As String
+  'count the number of chars
+  If radeng.Value Then
+    'max chars is 160
+    curmsg = "Characters: " & Len(txtmessage.Text) & " in " & CStr(CInt(Len(txtmessage.Text) / 160) + 1) & " SMS's."
+  Endif
+  If radoth.Value Then
+    
+    'oth
+    'max chars is 70
+    curmsg = "Characters: " & String.Len(txtmessage.Text) & " in " & CStr(CInt(String.Len(txtmessage.Text) / 70) + 1) & " SMS's."
+      
+  Endif
+  
+  lblcount.Text = curmsg
+  
+
+End
+
+Public Sub radeng_Click()
+
+   txtmessage_KeyRelease()
+
+End
+
+Public Sub radoth_Click()
+
+   txtmessage_KeyRelease()
+
+End
+
+
+Public Sub txtsender_KeyPress()
+
+  
+
+End
+
+Public Sub chkbroadcast_Click()
+
+  If chkbroadcast.Value = True Then
+    'allow broadcast mode
+    pnlbroadcast.Visible = True
+    txtto.Enabled = False
+  Else
+    pnlbroadcast.Visible = False
+    txtto.Enabled = True
+    
+    
+  Endif
+
+End
+
+Public Sub btnadd_Click()
+Dim sqltext As String 'for the text to search for
+Dim defText As String 'for the message used
+Dim curSQL As String
+Dim curresult As Result
+
+
+'   current list "School Fees" 
+'   Black Rain
+' Pre T8
+' T8
+' Other Signal
+'look up text from types
+'set look up text
+If radeng.Value = True Then 'English
+  sqltext = cbomessage.Text & " ENG"
+Else
+  sqltext = cbomessage.Text & " CHI"
+Endif
+
+'look up text
+'set sql
+
+curSQL = "Select * From tbltypes Where typkey = '" & sqltext & " '"
+
+curresult = basroutines.getconnection().Exec(curSQL)
+
+defText = ""
+If curresult.Count <> 0 Then
+  'return first value
+  curresult.MoveFirst
+  defText = curresult["typvalue"]
+  
+Endif
+
+
+
+If defText <> "" And txtto.Tag <> "" Then 'check for fields
+  'look up student
+  cursql = "Select * From tblstudents Where stuid = " & txtto.Tag
+  curresult = basroutines.getconnection().Exec(cursql)
+  If curresult.Count <> 0 Then 'found student
+    'replace text if needed
+    '<<name>>
+    If InStr(defText, "<<name>>") Then
+      'replace text
+      defText = Replace(defText, "<<name>>", curresult["stuengfamname"])
+      
+    Endif
+  Endif
+    If InStr(defText, "<<duedate>>") Then
+      'replace text
+      defText = Replace(defText, "<<duedate>>", Format(curresult["sturendate"], "dd mmm"))
+      
+    Endif
+  
+  'numbers latter
+  
+  
+  
+  
+Endif
+
+txtmessage.Text = defText
+
+
+
+End

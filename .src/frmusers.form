@@ -1,0 +1,93 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,88,64)
+  Font = Font["URW Gothic L"]
+  { cnnusers DataSource
+    MoveScaled(-1,0,87,63)
+    Table = "tblusers"
+    { bronames DataBrowser
+      MoveScaled(2,1,30,61)
+      CanCreate = False
+      CanDelete = False
+      Columns = ["usrdispname"]
+      Labels = ["Name:"]
+    }
+    { usrid DataControl
+      MoveScaled(78,1,7,4)
+      Enabled = False
+      Field = "usrid"
+    }
+    { usrdispname DataControl
+      MoveScaled(34,9,51,5)
+      Field = "usrdispname"
+    }
+    { usrlogin DataControl
+      MoveScaled(34,18,51,5)
+      Field = "usrlogin"
+    }
+    { usrpass DataControl
+      MoveScaled(34,29,51,5)
+      Field = "usrpass"
+    }
+    { usryubikey DataControl
+      MoveScaled(34,38,51,5)
+      Field = "usryubikey"
+    }
+    { btnpwdchange Button
+      MoveScaled(69,24,16,4)
+      Text = Shortcut(("Change PWD"), "C")
+    }
+    { Label1 Label
+      MoveScaled(34,5,24,4)
+      Text = ("Display Name:")
+    }
+    { Label2 Label
+      MoveScaled(34,14,24,4)
+      Text = ("Login:")
+    }
+    { Label3 Label
+      MoveScaled(0,0,24,4)
+    }
+    { Label4 Label
+      MoveScaled(34,24,24,4)
+      Text = ("Password:")
+    }
+    { Label5 Label
+      MoveScaled(34,34,24,4)
+      Text = ("YubiKey:")
+    }
+    { btncheckyubi Button
+      MoveScaled(69,44,16,4)
+      Visible = False
+      Text = Shortcut(("Check YubiKey"), "C")
+    }
+    { btnnew Button
+      MoveScaled(34,57,16,4)
+      Text = Shortcut(("New"), "N")
+    }
+    { btnupdate Button
+      MoveScaled(70,57,16,4)
+      Text = Shortcut(("Update"), "U")
+    }
+    { usrsalt DataControl
+      MoveScaled(59,34,26,4)
+      Visible = False
+      Field = "usrsalt"
+    }
+    { usrlevel DataControl
+      MoveScaled(80,49,5,4)
+      Field = "usrlevel"
+    }
+    { Label6 Label
+      MoveScaled(54,49,25,4)
+      Text = ("Level:")
+      Alignment = Align.Right
+    }
+    { usryubionly DataCheckBox
+      MoveScaled(35,44,31,4)
+      Text = ("Use Yubi only")
+      Field = "usryubionly"
+    }
+  }
+}

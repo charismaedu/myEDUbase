@@ -1,0 +1,141 @@
+* Sat Dec 10 2016 Steven Drinnan <steven@sjdsoft.hk> 0.28.12
+- Latest
+
+* Tue Aug 23 2016 Steven Drinnan <steven@sjdsoft.hk> 0.27.12
+- cards export form finished - need work on photo
+
+* Sat Aug 20 2016 Steven Drinnan <steven@sjdsoft.hk> 0.26.12
+- added print id flag
+
+* Wed Aug 17 2016 Steven Drinnan <steven@sjdsoft.hk> 0.25.12
+- added summery form to show stats of centre , sqldue and reciept totals at the moment
+
+* Tue Aug 16 2016 Steven Drinnan <steven@sjdsoft.hk> 0.24.12
+- Can select only current students
+
+* Mon Aug 15 2016 Steven Drinnan <steven@sjdsoft.hk> 0.23.12
+- Make sml photos to speed up loading of images in student view
+
+* Tue Jul 26 2016 Steven Drinnan <steven@sjdsoft.hk> 0.22.12
+- make sure can work on centos
+
+* Tue Jun 28 2016 Steven Drinnan <steven@sjdsoft.hk> 0.22.10
+- fixed bug in new student - stupic field
+
+* Fri Jun 24 2016 Steven Drinnan <steven@sjdsoft.hk> 0.21.10
+- can use png for student photos
+
+* Tue Jun 21 2016 Steven Drinnan <steven@sjdsoft.hk> 0.20.10
+- added ver to frmmain
+
+* Tue Jun 21 2016 Steven Drinnan <steven@sjdsoft.hk> 0.20.9
+- Added pictures to students
+- Changed back to GTK2 (datacontrols not converted properly)
+- Added attendance table (not working yet)
+
+* Wed Jun 15 2016 Steven Drinnan <steven@sjdsoft.hk> 0.19.9
+- Improve expence from
+- Default Meassages for SMS
+
+* Wed May 04 2016 Steven Drinnan <steven@sjdsoft.hk> 0.18.9
+- Change to GTK3
+
+* Wed May 04 2016 Steven Drinnan <steven@sjdsoft.hk> 0.17.9
+- preview reciepts
+
+* Fri Apr 15 2016 Steven Drinnan <steven@sjdsoft.hk> 0.16.9
+- Tydy up expence form
+
+* Wed Apr 13 2016 Steven Drinnan <steven@sjdsoft.hk> 0.15.9
+- Expence form now working
+
+* Sat Apr 02 2016 Steven Drinnan <steven@sjdsoft.hk> 0.14.9
+- login screen reenabled
+
+* Fri Apr 01 2016 Steven Drinnan <steven@sjdsoft.hk> 0.13.9
+- Updated reciept form to have a note, reciept SMS formated better
+
+* Thu Mar 24 2016 Steven Drinnan <steven@sjdsoft.hk> 0.12.9
+- BUlk SMS works for all current students
+
+* Mon Mar 21 2016 Steven Drinnan <steven@sjdsoft.hk> 0.11.9
+- can set so only yubikey is needed to login
+
+* Wed Mar 16 2016 Steven Drinnan <steven@sjdsoft.hk> 0.10.9
+- fix reciept form - forgot to snage to mysql
+- updated login form
+
+* Tue Mar 15 2016 Steven Drinnan <steven@sjdsoft.hk> 0.10.8
+- Fixed chinese sms
+- Changed to mysql backend
+
+* Wed Feb 17 2016 Steven Drinnan <steven@sjdsoft.hk> 0.9.8
+- SMS now log as a note if created for a student
+
+* Wed Feb 17 2016 Steven Drinnan <steven@sjdsoft.hk> 0.9.7
+- When romoving classes it add the end date
+
+* Sun Feb 14 2016 Steven Drinnan <steven@sjdsoft.hk> 0.9.6
+- Classes form now only shows currently enrolled students
+- Stundents now show ren date in the classes form
+
+* Sat Feb 13 2016 Steven Drinnan <steven@sjdsoft.hk> 0.8.6
+- Sort class by day
+- Fixed Reciept to addding renewal date
+- Added Notes form
+
+* Wed Feb 03 2016 Steven Drinnan <steven@sjdsoft.hk> 0.7.6
+- Class form
+- can add and remove students to classes
+
+* Thu Jan 28 2016 Steven Drinnan <steven@sjdsoft.hk> 0.6.6
+
+* Thu Jan 28 2016 Steven Drinnan <steven@sjdsoft.hk> 0.6.6
+- Yubikey logos
+- Renewal Date checks to see if date in tblstudents is no newer
+
+* Tue Jan 26 2016 Steven Drinnan <steven@sjdsoft.hk> 0.6.5
+- YubiKey intergartion and user login
+
+* Mon Jan 25 2016 Steven Drinnan <steven@sjdsoft.hk> 0.5.5
+- Update frmstudents - can edit reciepts and delete and modify them to (part the renewal date)
+
+* Fri Jan 22 2016 Steven Drinnan <steven@sjdsoft.hk> 0.2.5
+- Classes table and form now usable
+
+* Wed Jan 20 2016 Steven Drinnan <steven@sjdsoft.hk> 0.1.5
+- Download and add HK holidays from holiday form
+
+* Tue Jan 19 2016 Steven Drinnan <steven@sjdsoft.hk> 0.1.4
+- add auto date and holiday check and holiday form
+
+* Thu Jan 14 2016 Steven Drinnan <steven@sjdsoft.hk> 0.0.4
+- Fix Bug in Autonumber
+
+* Wed Jan 13 2016 Steven Drinnan <steven@sjdsoft.hk> 0.0.4
+- Autonumber of reeipts and date of receipt
+
+* Tue Jan 05 2016 Steven Drinnan <steven@sjdsoft.hk> 0.0.4
+- Added SMS Reciept
+
+* Mon Jan 04 2016 Steven Drinnan <steven@sjdsoft.hk> 0.0.4
+
+* Sat Dec 12 2015 Steven Drinnan <steven@sjdsoft.hk> 0.0.4
+
+* Mon Nov 23 2015 Steven Drinnan <steven@sjdsoft.hk> 0.0.3
+
+* Mon Nov 23 2015 Steven Drinnan <steven@sjdsoft.hk> 0.0.3
+
+* Mon Nov 23 2015 Steven Drinnan <steven@sjdsoft.hk> 0.0.3
+
+* Mon Nov 23 2015 Steven Drinnan <steven@sjdsoft.hk> 0.0.3
+
+* Mon Nov 23 2015 Steven Drinnan <steven@sjdsoft.hk> 0.0.3
+
+* Mon Nov 23 2015 Steven Drinnan <steven@sjdsoft.hk> 0.0.3
+
+* Tue Jun 23 2015 SJDSoft <steven@sjdsoft.hk> 0.0.3
+
+* Tue Jun 23 2015 SJDSoft <steven@sjdsoft.hk> 0.0.2
+- Initial release
+

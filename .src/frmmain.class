@@ -1,0 +1,93 @@
+' Gambas class file
+
+Public Sub _new()
+
+End
+
+Public Sub Form_Open()
+'display ver
+lblver.Text = "Ver: " & Application.Version & " (mysql)"
+Me.Mouse = Mouse.Wait
+
+
+End
+
+Public Sub btnstudents_Click()
+
+  'opens the student form
+  frmstudents.Show
+
+End
+
+Public Sub btnclasses_Click()
+
+  frmclasses.Show
+
+End
+
+Public Sub btnholidays_Click()
+
+ frmholidays_add.Show
+End
+
+Public Sub btnsms_Click()
+
+  frmsms.Show
+  
+
+End
+
+Public Sub btnexpences_Click()
+
+  frmexpences.Show()
+  
+
+End
+
+Public Sub btncatagories_Click()
+
+  frmcatagories.Show
+  
+
+End
+
+Public Sub btntypes_Click()
+
+  frmtypes.Show
+
+End
+
+Public Sub btnusers_Click()
+
+  frmusers.Show()
+  
+
+End
+
+Public Sub btnsummery_Click()
+
+  frmsummery.Show
+
+End
+
+Public Sub btncards_Click()
+
+  frmidcards.Show
+
+End
+
+Public Sub Form_Close()
+
+  Quit
+
+End
+
+Public Sub Timer1_Timer()
+
+  'check to see if frmstuloaded
+  If frmstudents.loadedtv = True Then
+    Me.Mouse = Mouse.Default
+    Timer1.Delay = 0
+  Endif
+
+End

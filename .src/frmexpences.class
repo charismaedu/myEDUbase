@@ -1,0 +1,312 @@
+' Gambas class file
+
+'Private hWebCam
+Private mypicfrm As Frmpic
+Private newpath As String
+
+
+Public Sub expconv_Validate(Value As Variant)
+
+  If TypeOf(Value) = gb.Float Or TypeOf(Value) = gb.Long Then
+    expamount.Value = expamountorg.Value * expconv.Value 
+    
+  
+  Else
+    Message.Error("Invalid Convertion data!")
+    'expconv.Value = 1
+  Endif
+
+End
+
+Public Sub frcam_MouseDown()
+
+  
+
+End
+
+Private Sub startcam()
+  ' 
+  '  Dim num As Integer
+  ' Dim Buf As String
+  ' 
+  ' If hWebCam Then
+  '  
+  '   Bright.Enabled = False
+  '   Contrast.Enabled = False
+  '   Hue.Enabled = False
+  '   Whiteness.Enabled = False
+  '   Colour.Enabled = False
+  '   
+  '   BtnTakeShot.Enabled = False
+  '   Button2.Enabled = False
+  '   hWebCam = Null
+  '   Tmr.Enabled = False
+  '   Return
+  ' End If
+  ' 
+  ' 
+  ' Try hWebCam = New VideoDevice(TxtDevice.Text)
+  ' If Error Then
+  '   Message.Error(("Unable to open video device"))
+  '   Return
+  ' End If
+  ' hWebCam.Source = hWebCam.TV + hWebCam.PAL
+  ' 
+  ' Button1.Caption = ("Stop")
+  ' BtnTakeShot.Enabled = True
+  ' Button2.Enabled = True
+  ' Bright.Enabled = True
+  ' Contrast.Enabled = True
+  ' Hue.Enabled = True
+  ' Whiteness.Enabled = True
+  ' Colour.Enabled = True
+  ' V1.Enabled = True
+  ' V2.Enabled = True
+  ' V3.Enabled = True
+  ' V4.Enabled = True
+  ' V5.Enabled = True
+  ' V6.Enabled = True
+  ' FreqUp.Enabled = True
+  ' FreqDown.Enabled = True
+  ' TxtDevice.Enabled = False
+  ' OnSet = True
+  ' Bright.Value = hWebcam.Bright
+  ' Contrast.Value = hWebcam.Contrast
+  ' Hue.Value = hWebCam.Hue
+  ' Whiteness.Value = hWebCam.Whiteness
+  ' Colour.Value = hWebCam.Color
+  ' LblFreq.Text = "Tuner frequency: " & hWebCam.Tuner.Frequency
+  ' 
+  ' Wait 0.001
+  ' OnSet = False
+  ' Tmr.Delay = 10
+  ' Tmr.Enabled = True
+  ' Me.Caption = hWebCam.Features.Name
+  ' Fps = Now()
+  ' nFps = 0
+  ' 'initPicture = hWebcam.Picture
+  ' 
+
+  
+End
+
+Public Sub btnnew_Click()
+
+  cnnexp.Create
+  cnnexpdet.Visible = False
+  btnudate.Visible = True
+  btnnew.Visible = False
+  btnudate.tag = "new"
+  picexpimage.Picture = Null
+  
+  
+  
+
+End
+
+Public Sub Form_Open()
+
+  cnnexp.Connection = basroutines.getconnection()
+  cnnexpdet.Connection = basroutines.getconnection()
+  mypicfrm = New Frmpic
+  mypicfrm.Show
+  If cnnexp.count <> 0 Then
+    cnnexp.MoveLast
+  Else
+    btnudate.tag = "new"
+    
+  Endif
+
+End
+
+Public Sub cnnexp_Change()
+  Dim myfilter As String
+  picexpimage.Picture.Flush
+  If expid.Value <> "" Then
+     myfilter = "expid = " & CStr(expid.Value)   
+     'update picture
+     Try picexpimage.Picture = Picture.Load(exppath.Value)
+     mypicfrm.setpicture(exppath.value)
+  
+     cnnexpdet.filter = myfilter
+     If cnnexpdet.Count <> 0 Then cnnexpdet.MoveFirst
+    
+     If cnnexpdet.Count = 0 Then
+       'set default
+       expidlnk.Value = expid.Value
+     Endif
+     cnnexpdet.Visible = True
+     lblbalance.text = ""
+     'checkbalanced()
+  Else 
+    myfilter = ""
+    
+  Endif
+ btnudate.Visible = True
+ 
+  
+  
+  
+
+End
+
+Public Sub expimage_Validate(Value As Variant)
+
+  'picexpimage.Picture = Value
+  
+  
+
+End
+
+Public Sub picexpimage_Drop()
+Dim newpic As String
+Dim mypic As New Picture
+Dim ext As String
+Dim newvalue As String
+
+
+If drag.Type = Drag.Text Then
+  If InStr(Drag.data, "file") <> 0 Then
+    'we have a file try to load
+    newpic = URL.UnQuote(Drag.data)
+    newpic = Replace(newpic, "\r", "")
+    newpic = Replace(newpic, "\n", "")
+    newpic = Replace(newpic, "file://", "")
+    'check type 
+    ext = File.Ext(newpic)
+    If ext = "jpg" Or ext = "JPG" Or ext = "png" Or ext = "PNG" Then
+      
+      'copy file to expence dir
+      
+      mypic = Picture.Load(newpic)
+      
+      picexpimage.Picture = mypic
+      mypicfrm.setpicture(newpic)
+      picexpimage.Refresh  
+      'newvalue = basroutines.picturesave(newpic)
+      'expimage.Value = newvalue
+      exppath.tag = newpic
+      
+      newpath = basroutines.expenceimgpath & File.Name(newpic)
+      exppath.Value = newpath
+      
+    
+    Else
+      Message.Error("Invlaid Picture")
+    Endif
+    
+    
+  Endif
+Endif
+  
+
+End
+
+Public Sub btnudate_Click()
+
+   If cnnexp.Save() = False Then
+    'cnnexpdet.Filter = "expid = " & CStr(expid.Value)
+    'cnnexpdet.Visible = True
+    btnudate.Visible = True
+    btnnew.Visible = True   
+    
+    'copy file
+    If exppath.tag <> "" Then
+      Try Kill newpath
+      Try Copy exppath.Tag To newpath  
+      If Not Error Then
+        'delete old pic
+        Try Kill exppath.tag
+      Endif
+    Endif
+    exppath.Tag = "" 'reset  path
+    If btnudate.Tag <> "new" Then 
+      checkbalanced()
+    Else
+      cnnexp.MoveFirst
+      cnnexp.MoveLast
+    End If
+    
+    btnudate.tag = ""
+    
+    
+   
+    
+   Endif
+  
+  
+
+End
+
+Public Sub picexpimage_MouseDown()
+
+  
+
+End
+
+Public Sub cnnexp_MouseDown()
+
+  
+
+End
+
+Public Sub btnnewdet_Click()
+
+  cnnexpdet.Create
+  expidlnk.Value = expid.Value
+  
+
+End
+
+Public Sub btnupdatedet_Click()
+ 
+  
+  detlastmod.Value = Now
+  If cnnexpdet.Save() = False Then
+    checkbalanced()
+         
+  Endif
+  
+
+End
+
+Private Sub checkbalanced()
+   Dim sumsql As String
+   Dim rssum As Result
+  Dim curbalance As Float
+  
+      'check if balabced
+    sumsql = "Select SUM(detamount) as sumamt From tblexpdetail Where expid = " & CStr(expid.Value)
+    rssum = basroutines.getconnection().Exec(sumsql)
+    
+    'compare
+    curbalance = expamount.Value - rssum["sumamt"]
+    
+    If curbalance > 0 Then 'short need mor trans
+      lblbalance.Text = "Short by: " & CStr(curbalance)
+      expbalanced.Value = False
+    Else If curbalance < 0 Then 'over 
+      lblbalance.Text = "Over by: " & CStr(curbalance)
+      expbalanced.Value = False
+    Else If curbalance = 0 Then 'over 
+      lblbalance.Text = "Balanced"
+      expbalanced.Value = True
+    End If
+    'set to new so it does not call this function
+    cnnexp.Save()
+    
+  
+End
+
+
+Public Sub broexpen_MouseDown()
+
+  
+
+End
+
+Public Sub Form_Close()
+
+  mypicfrm.forceclose
+
+End

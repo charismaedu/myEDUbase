@@ -1,0 +1,144 @@
+' Gambas class file
+
+
+
+Public Sub cnnhols_MouseDown()
+
+  
+
+End
+
+Public Sub DateChooser1_Change()
+
+  holdate.Value = DateChooser1.Value
+  
+
+End
+
+Public Sub _New()
+    
+   
+  
+End
+
+Public Sub Form_Open()
+    
+    basroutines.dbconnect()
+    cnnhols.Connection = basroutines.cnnCharismaEDU    
+    cnnhols.ReadOnly = False
+    cnnhols.Table = "tblholidays"
+    
+    cnnhols.ResetAll
+  
+  
+   ' cnnhols.Create
+ ' holid.Value = cnnhols.Count + 1
+  
+
+End
+
+Public Sub btnsave_Click()
+
+
+  If holid.Value = "" Then holid.Value = cnnhols.Count + 1
+  cnnhols.Save
+  btnnew.Visible = True
+  
+
+  'Me.Close
+
+End
+
+Public Sub DataBrowser1_Data(Row As Integer, Column As Integer, Value As Variant)
+
+  DateChooser1.Value = holdate.Value
+
+End
+
+Public Sub btnnew_Click()
+
+  cnnhols.Create
+  btnnew.Visible = False
+
+End
+
+Public Sub btnimport_Click()
+  Dim HKics As String
+  Dim curpos As Integer
+  Dim curDate As String
+  Dim curDateD As Date
+  Dim curDesciption As String
+  Dim curResult As Result
+  Dim curcount As Integer
+  Dim curCnn As Connection
+  
+
+  'imports hk holidays
+  
+  'get the ics file
+  
+  'http://www.1823.gov.hk/common/ical/en.ics
+  Shell "wget -O - -o /dev/null http://www.1823.gov.hk/common/ical/en.ics" To HKics
+  curpos = 1
+ 
+ 'Lopp through file and find dates to add - must be advance of todays date
+  
+
+  
+  'curpos - InStr(HK
+  curCnn = basroutines.getconnection()
+  
+ 
+ While curpos <> 0
+   'find "DTSTART;VALUE=DATE:" 
+    curpos = InStr(HKics, "DTSTART;VALUE=DATE:", curpos)
+    If curpos <> 0 Then
+      'Find date (format yyyymmdd) and reverse
+      curpos = curpos + Len("DTSTART;VALUE=DATE:")
+      curdate = ""
+      curDate = Mid(HKics, curpos + 4, 2) & "/" & curDate & Mid(HKics, curpos + 6, 2) & "/" & curDate & Mid(HKics, curpos, 4) 'year
+     
+      
+     
+    ' Message.Info(curdate)
+      'Find 'SUMMARY:'
+      curpos = InStr(HKics, "SUMMARY:", curpos) + Len("SUMMARY:")
+      curDesciption = Mid(HKics, curpos, InStr(HKics, gb.CrLf, curpos) - curpos)
+     ' Message.Info(curDesciption)
+      'check date and add
+      'convert to date
+      curDateD = CDate(curdate)
+      'is date newer than today
+      If curDateD > Now Then
+        'check if date in database
+        curResult = curCnn.Exec("Select * From tblholidays Where holdate = '" & Format(curdateD, "yyyy-mm-dd hh:nn:ss") & "'")
+        If curResult.Count = 0 Then 'add holiday
+          'get next recordnumber
+          
+          curcount = curCnn.Exec("Select * from tblholidays").Count + 1
+          
+          curresult = curCnn.Create("tblholidays")
+            
+            curResult["holid"] = curcount
+            curResult["holdate"] = curDateD
+            curResult["holdescription"] = curDesciption
+          
+          curresult.Update
+        Endif
+          
+          
+          
+      Endif
+      
+      
+      
+    Endif
+   
+ Wend
+ 
+ 
+ 
+ 
+  
+
+End

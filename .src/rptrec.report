@@ -1,0 +1,25 @@
+# Gambas Form File 3.0
+
+{ Report Report
+  #MoveScaled(0,0,119,60)
+  Index = 0
+  Text = ("")
+  { ReportLabel1 ReportLabel
+    #MoveScaled(59,0,55,8)
+    Left = "150mm"
+    Top = "10mm"
+    Width = "50mm"
+    AutoResize = True
+    Text = ("Shop 28-72, Level 2, 3 On Chee Road, Jade Plaza, Tai Po, NT\n大埔翠屏商場2樓28-12號鋪 陳小姐\nPh: +852 2602 6755\\")
+    Alignment = Align.Right
+  }
+  { ReportImage1 ReportImage
+    #MoveScaled(3,1,35,7)
+    Left = "10mm"
+    Top = "10mm"
+    Width = "10cm"
+    Fixed = True
+    Image = Image.Load("LogoLg.png")
+  }
+  Index = 0
+}

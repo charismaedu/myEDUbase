@@ -1,0 +1,40 @@
+' Gambas class file
+
+
+Public Sub btnnew_Click()
+  
+  
+  cnntypes.Create()
+  typid.Value = cnntypes.Count + 1
+  btnupdate.Visible = True
+  btnupdate.Tag = "new"
+  
+
+End
+
+Public Sub fields_GotFocus()
+
+  btnupdate.Visible = True
+
+End
+
+Public Sub btnupdate_Click()
+
+  'If typid.Value = "" Then typid.Value = cnntypes.Count + 1
+  cnntypes.save
+  btnupdate.Visible = False
+  If btnupdate.Tag = "new" Then
+    Try cnntypes.MoveLast
+    
+  Endif
+  btnupdate.Tag = ""
+  
+
+End
+
+Public Sub Form_Open()
+  cnntypes.Connection = basroutines.getconnection()
+  Try cnntypes.MoveFirst
+  
+
+End

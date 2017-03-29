@@ -1,0 +1,10 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,82,63)
+  { picrec PictureBox
+    MoveScaled(4,3,71,56)
+    Picture = Picture["LogoLg.png"]
+    Stretch = True
+  }
+}

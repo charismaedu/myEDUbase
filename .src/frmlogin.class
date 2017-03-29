@@ -1,0 +1,62 @@
+' Gambas class file
+
+Private logincount As Integer
+
+Public Sub Run() As Boolean
+
+  Return Not Me.ShowModal()
+
+End
+
+Public Sub btnOK_Click()
+
+  
+  'check pass
+  
+  If basroutines.checkpassword(txtlogin.Text, txtpwd.Text) Then
+    'check yubikey
+    If basroutines.checkuserYubi(0, txtyubikey.Text, txtlogin.Text) Then
+        basroutines.curusrlogin = txtlogin.Text
+        frmmain.Show()
+        Me.Close(True)
+    Else
+     logincount = logincount + 1
+    Endif
+  Else
+    logincount = logincount + 1
+    txtpwd.Text = ""
+    txtyubikey.Text = ""
+    
+  Endif
+  If logincount = 3 Then
+    Me.Close(False)
+  Endif
+
+End
+
+Public Sub btnCancel_Click()
+
+  Me.Close
+
+End
+
+
+Public Sub Form_Open()
+  Dim curresult As Result
+  'check if any users
+  
+  
+  curresult = basroutines.getconnection().Exec("Select * From tblusers")
+  
+  If curresult.Count = 0 Then 
+    'no users
+    Message.Info("Please add your first user.")
+    frmusers.Show
+    Me.Close
+    
+  Endif
+  
+  logincount = 0
+  lblver.Text = "Ver: " & Application.Version & " (mysql)"
+
+End

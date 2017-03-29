@@ -1,0 +1,114 @@
+' Gambas class file
+
+Private cnncat As Connection
+
+
+Public Sub Form_Open()
+
+  'this form allows you to add catagories
+  'The add group button allows a new primary group
+  'Double clicking will allow to add a description that will appear as a tag popup
+  'The add sec allows the adding of secondary catagories.
+  'Double clicking will allow to add a description that will appear as a tag popup
+  'up down buttons orders the list.
+
+  'create connection
+  cnncat = basroutines.getconnection()
+  getprimary
+  
+End
+
+Private Sub getprimary()
+  
+  'retrive all and order,
+  
+  Dim cursql As String
+  Dim myresult As Result
+  Dim i As Integer
+  
+  lstsec.Clear
+  lstpri.Clear
+  
+  
+  cursql = "SELECT * FROM tblcatagories WHERE catparid = 0 ORDER BY catorder" 'zero is the tag for parent ids
+  
+  
+  myresult = cnncat.Exec(cursql)
+  
+  
+  'loop and add
+  If myresult.Count <> 0 
+    myresult.MoveFirst
+    For i = 1 To myresult.Count
+      lstpri.Add(CStr(myresult["catid"]), myresult["catname"])
+      myresult.MoveNext
+    Next
+  End If
+  
+  
+  
+  
+End
+
+Public Sub btnaddprim_Click()
+  Dim newname As String
+  Dim cursql As String
+  Dim nextnum As Integer
+  Dim myresult As Result
+  
+  
+  'calculate next number load and get number
+  cursql = "SELECT * FROM tblcatagories Order By catid" 'we need the last id
+  
+  myresult = cnncat.Exec(cursql)
+  
+  
+  If myresult.Count <> 0 
+    myresult.MoveLast
+    nextnum = myresult["catid"] + 1
+  Else
+    nextnum = 1
+      
+  End If
+  
+  
+  'add a primary
+  newname = InputBox("Name of new Group:", "New Group", "Group name")
+  
+  If newname Not Null Then
+    'add record
+    cursql = "INSERT INTO tblcatagories (catid,catname) VALUES (" & CStr(nextnum) & ",'" & CStr(newname) & "')"
+    cnncat.Exec(cursql)
+    
+    getprimary()
+    
+  Endif
+  
+  
+
+End
+
+Public Sub lstpri_Rename()
+  Dim cursql As String
+  
+  
+  'update record
+  cursql = "UPDATE tblcatagories SET catname = '" & lstpri.Item.Text & "' WHERE catid = " & lstpri.Item.Key 
+  
+  cnncat.Exec(cursql)
+  
+  
+
+End
+
+Public Sub btnaddsec_Click()
+
+  
+
+End
+
+Public Sub lstpri_Click()
+
+  
+
+End

@@ -1,0 +1,21 @@
+' Gambas class file
+
+
+Public Sub Form_Open()
+
+  cnnsqldue.Connection = basroutines.getconnection()
+  cnnreciepts.Connection = basroutines.getconnection()
+
+End
+
+Public Sub brdue_DblClick()
+
+  'openstudebt form
+  frmstudents.Show
+  frmstudents.txtsearch.Text = CStr(cnnsqldue["stuid"])
+  frmstudents.tvfindstudents()
+  frmstudents.tvstudents.MoveFirst
+  frmstudents.tvstudents.Item.Selected = True
+  
+End
+

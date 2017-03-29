@@ -1,0 +1,54 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,117,67)
+  Background = &H007FFF&
+  { PictureBox1 PictureBox
+    MoveScaled(1,1,56,10)
+    Picture = Picture["LogoLg.png"]
+    Stretch = True
+    AutoResize = True
+  }
+  { tabsummeries TabStrip
+    MoveScaled(2,11,114,53)
+    Background = &H007FFF&
+    Count = 4
+    Index = 0
+    Text = ("Overview")
+    { lblclass Label
+      MoveScaled(3,3,22,5)
+      Text = ("No of current classes:")
+    }
+    { txtcurclasses TextBox
+      MoveScaled(26,3,23,4)
+      ReadOnly = True
+    }
+    Index = 1
+    Text = ("Due")
+    { cnnsqldue DataSource
+      MoveScaled(4,2,89,45)
+      Table = "sqldue"
+      { brdue DataBrowser
+        MoveScaled(3,2,85,42)
+        Control = False
+        CanCreate = False
+        CanDelete = False
+      }
+    }
+    Index = 2
+    Text = ("Reciepts")
+    { cnnreciepts DataSource
+      MoveScaled(3,1,68,45)
+      Table = "sqlrectotals"
+      { DataBrowser2 DataBrowser
+        MoveScaled(2,3,63,40)
+        Control = False
+        CanCreate = False
+        CanDelete = False
+      }
+    }
+    Index = 3
+    Text = ("Expences")
+    Index = 0
+  }
+}

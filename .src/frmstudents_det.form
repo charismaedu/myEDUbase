@@ -1,0 +1,11 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,80,46)
+  Font = Font["URW Gothic L"]
+  { lblname Label
+    MoveScaled(2,0,74,5)
+    Font = Font["URW Gothic L,Bold,+5"]
+    Text = ("Name ...")
+  }
+}

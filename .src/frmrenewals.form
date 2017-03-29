@@ -1,0 +1,20 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,101,55)
+  Font = Font["URW Gothic L"]
+  Icon = Picture["LogoLg.png"]
+  { TextLabel1 TextLabel
+    MoveScaled(2,1,95,7)
+    Font = Font["Bold,+10"]
+    Text = ("Broadcast SMS")
+    Alignment = Align.Center
+  }
+  { radcurrent RadioButton
+    MoveScaled(2,10,13,4)
+    Text = ("Current")
+  }
+  { TextArea1 TextArea
+    MoveScaled(3,19,95,16)
+  }
+}

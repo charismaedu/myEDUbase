@@ -1,0 +1,26 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,39,49)
+  Text = ("Catagories")
+  { Label1 Label
+    MoveScaled(1,1,18,3)
+    Text = ("Primary Grouping:")
+  }
+  { btnaddprim Button
+    MoveScaled(1,44,18,4)
+    Text = ("Add Group")
+  }
+  { btnaddsec Button
+    MoveScaled(20,44,18,4)
+    Enabled = False
+    Text = ("Add Detail")
+  }
+  { lstpri ListView
+    MoveScaled(1,4,18,39)
+    Editable = True
+  }
+  { lstsec ListView
+    MoveScaled(20,4,18,39)
+  }
+}

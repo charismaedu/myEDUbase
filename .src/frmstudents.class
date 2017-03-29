@@ -1,0 +1,919 @@
+' Gambas class file
+
+Private stucnn As Connection
+'Private stuview As OcPhotoView
+Private Response As Variant
+Private curSQL As String
+Private curRS As Result
+Private refreshonce As Boolean
+
+Public loadedtv As Boolean
+
+
+
+
+
+
+Public Sub btnupdate_Click()
+
+ Dim curRS As Result
+ Dim uSQL As String
+ Dim newID As Integer
+ 
+ 'If Int(Now - basroutines.yubilastcheck) >= 2 Then
+ 
+ If basroutines.checkuserYubi(0, InputBox("Please push YubiKey for user: " & basroutines.curusrlogin, "YubiKey"), basroutines.curusrlogin) Then
+   
+ 
+  'Sanatising done on each control
+  stuid.Text = Trim(stuid.Text)
+  'We should check if record changed - but that will be done latter
+  If btnUpdate.Tag = "new" Then
+    
+    'update as a new record
+    'set defid to 0 
+    newID = 0
+    If stuid.Text <> "" Then  'number entered
+      newID = Val(stuid.text)
+    End If
+    
+    If newID = 0 Then
+    'get next ID
+      usql = "Select stuid from tblstudents ORDER BY stuid"
+      curRS = basroutines.getResult(usql, stucnn)
+      If curRS.Count = 0 Then
+          newID = 1
+      Else
+          curRS.MoveLast
+          newID = curRS["stuid"] + 1
+      Endif
+      
+    End If
+    
+  
+      
+        'create a new record
+        curRS = stucnn.Create("tblstudents")
+          stuid.Text = CStr(newID)
+          curRS["stuid"] = CInt(stuid.Text)
+          curRS["stuengfamname"] = stuengname.Text
+          curRS["stuchifamname"] = stuchiname.Text
+        
+          curRS["studob"] = studob.Tag
+        
+          curRS["stucurschool"] = stucurschool.Text
+          curRS["stucuryear"] = stucuryear.Text
+        
+          'contact panel
+          curRS["stuconengfamname"] = stuconengname.Text
+          curRS["stuconchifamname"] = stuconchiname.Text
+          curRS["stuconaddress"] = stuconaddress.Text
+          curRS["stuconphone"] = stuconphone.Text
+          curRS["stuconmobphone"] = stuconmobphone.Text
+          curRS["stuconemail"] = stuconemail.Text
+          curRS["stucon2engname"] = stucon2engname.Text
+          curRS["stucon2chiname"] = stucon2chiname.Text
+          curRS["stucon2mobphone"] = stucon2mobphone.Text
+          curRS["stuconnoemail"] = stuconnoemail.Value
+          curRS["sturendate"] = sturendate.Tag
+          curRS["stupic"] = Format(newid, "0000") & ".png"
+          curRS["stuprint"] = stuprint.Value
+          curRS["stucredit"] = CFloat(stucredit.Text)
+          curRS["stumaxdeduc"] = CFloat(stumaxdeduct.Text)
+          
+          
+          curRS["stulastmod"] = Now()
+        curRS.Update
+      
+      
+  Else
+    'update curent record
+    'get record
+    uSQL = "stuid = " & stuid.Text
+    curRS = stucnn.Edit("tblstudents", uSQL)
+    If curRS.Count = 1 Then 'we found the record
+      'update fields and then the record.
+        'curRS["stuid"] = stuid.Text
+        'todo put in checking for transaction loss in multi user enviorment
+        
+        
+        curRS["stuengfamname"] = stuengname.Text
+        curRS["stuchifamname"] = stuchiname.Text
+      
+        curRS["studob"] = studob.Tag
+      
+        curRS["stucurschool"] = stucurschool.Text
+        curRS["stucuryear"] = stucuryear.Text
+      
+        'contact panel
+        curRS["stuconengfamname"] = stuconengname.Text
+        curRS["stuconchifamname"] = stuconchiname.Text
+        curRS["stuconaddress"] = stuconaddress.Text
+        curRS["stuconphone"] = stuconphone.Text
+        curRS["stuconmobphone"] = stuconmobphone.Text
+        curRS["stuconemail"] = stuconemail.Text
+        curRS["stucon2engname"] = stucon2engname.Text
+        curRS["stucon2chiname"] = stucon2chiname.Text
+        curRS["stucon2mobphone"] = stucon2mobphone.Text
+        curRS["stuconnoemail"] = stuconnoemail.Value
+        curRS["stuprint"] = stuprint.Value
+        If sturendate.tag <> "" Then
+         curRS["sturendate"] = sturendate.Tag 
+        Endif
+         
+        
+        curRS["stulastmod"] = Now()
+        curRS.Update
+        newID = stuid.Text
+        
+    Endif   
+      
+  Endif
+  
+  btnupdate.Visible = False
+  btnupdate.tag = ""
+  btnnew.Visible = True
+  stuid.ReadOnly = True
+  loadstudentstv
+  
+  
+  
+ ' Catch
+    'if any errors report
+ '   Message.Error(Error.Text)
+ Else
+   Message.Error("Invalid Yubikey.")
+ Endif   
+    
+End
+
+Public Sub btnnew_Click()
+  
+  'set the form to blank
+  clearforms()
+  
+  'Hide the new btn
+  btnnew.Visible = False
+  btnupdate.Visible = True 
+  btnupdate.Tag = "new" 'marks it as a new record
+  stuid.ReadOnly = False
+  
+  'Show the pnl if not visable
+  
+  
+   pnldetails.Visible = True
+   
+  
+  
+  
+End
+
+
+
+Public Sub btndob_Click()
+
+  'open or close the date dialog
+  
+  If dobchooser.Visible = True Then 'close
+    dobchooser.Visible = False
+    Else
+      dobchooser.Value = studob.Tag
+      dobchooser.Visible = True
+  End If
+      
+  
+
+End
+
+Public Sub dobchooser_Change()
+
+    'update the date
+  studob.Tag = dobchooser.Value
+  studob.Text = Format$(studob.Tag, "dd mmmm yyyy")
+  btnupdate.Visible = True
+
+End
+
+
+Public Sub grpfields_Change()
+
+  btnupdate.Visible = True
+
+End
+
+Public Sub grpfields_Click()
+
+btnupdate.Visible = True
+  
+
+End
+
+
+Private Sub clearforms()
+  
+  'clears all the forms
+  'Main Part
+  stuengname.Text = ""
+  stuchiname.Text = ""
+  stuid.Text = ""
+  studob.Text = ""
+  stucurschool.Text = ""
+  stucuryear.Text = ""
+  
+  'Contact Details
+  stuconengname.Text = ""
+  stuconchiname.Text = ""
+  stuconaddress.Text = ""
+  stuconphone.Text = ""
+  stuconmobphone.Text = ""
+  stuconemail.Text = ""
+  stucon2engname.Text = ""
+  stucon2chiname.Text = ""
+  stucon2phone.Text = ""
+  stucon2mobphone.Text = ""
+  stuconnoemail.Value = 0
+  sturendate.Text = ""
+  stucredit.Text = ""
+  stumaxdeduct.Text = ""
+  Try stupic.Picture.Clear
+  stuprint.value = True
+  'Class
+  
+  'Notes
+  btnupdate.Visible = False
+  stuid.ReadOnly = True
+  basroutines.yubilastcheck = DateAdd(Now, gb.Minute, -10) 'clears timmer
+  
+  
+  
+  
+End
+
+
+Public Sub lsstudents_MouseDown()
+
+  
+
+End
+
+Public Sub loadstudent(newID As Integer)
+  
+  
+  
+End
+
+
+
+Private Sub displayrecord(nextRec As Integer)
+    'look up record
+    Dim tmpSQL As String
+    Dim curcontrol As Control
+    Dim newpic As Picture
+    Dim newpicpath As String
+    tmpsql = "SELECT * From tblstudents WHERE stuid = " & CStr(nextRec)
+    
+    curRS = basroutines.getResult(tmpSQL, stucnn)
+    clearforms
+    
+   
+      If curRS.Count <> 0 Then
+       'take the first one
+        Me.Text = "Charsima Education - (" & curRS["stuid"] & ") " & curRS["stuengfamname"]
+        stuid.Text = curRS["stuid"]
+        stuengname.Text = curRS["stuengfamname"]
+        stuchiname.Text = curRS["stuchifamname"]
+      
+        Try studob.Text = Format(curRS["studob"], "dd mmmm yyyy")
+        studob.Tag = curRS["studob"]
+      
+        stucurschool.Text = curRS["stucurschool"]
+        stucuryear.Text = curRS["stucuryear"]
+      
+        'contact panel
+        stuconengname.Text = curRS["stuconengfamname"]
+        stuconchiname.Text = curRS["stuconchifamname"]
+        stuconaddress.Text = curRS["stuconaddress"]
+        stuconphone.Text = curRS["stuconphone"]
+        stuconmobphone.Text = curRS["stuconmobphone"]
+        stuconemail.Text = curRS["stuconemail"]
+        stucon2engname.Text = curRS["stucon2engname"]
+        stucon2chiname.Text = curRS["stucon2chiname"]
+        stucon2mobphone.Text = curRS["stucon2mobphone"]
+        stuconnoemail.Value = curRS["stuconnoemail"]
+        Try sturendate.Text = Format(curRS["sturendate"], "dd mmmm yyyy")
+        sturendate.Tag = ""
+        Try sturendate.Tag = curRS["sturendate"]
+        'load picture if avail
+        stupic.Picture = Null
+        'Message.Info(basroutines.stupicpath &/ curRS["stupic"])
+        newpicpath = basroutines.stupicpath &/ curRS["stupic"]
+        'newpic = 
+        'Try stupic.Picture = Picture[newpicpath]
+        stupic.Picture = basroutines.getstupic(curRS["stupic"], True)
+        stuprint.Value = curRS["stuprint"]
+        'class pnl
+      stucredit.Text = curRS["stucredit"]
+      stumaxdeduct.Text = curRS["stumaxdeduct"]
+      
+      
+        'notes panel
+      
+      
+     
+      'pnl; reciept
+       
+       'reciet
+       cnnreciepts.Cancel
+      ' cnnreciepts.Table = "Select * From tblreceipts Where recstuid = " & curRS["stuid"] & " Order By recdate"
+       cnnreciepts.Filter = "recstuid =  " & curRS["stuid"]
+       'cnnreciepts.Table = "Select strftime('%d %m %Y',recdate) as Date, recnumber as 'RecNo',reccourse as 'Course Details', recdates as 'Course Dates', reccourseamt as Amount, recoth as Others, recothamt as 'Other Amt', recdis+recothdis as Disc,  rectotal as 'Total' From tblreceipts " 
+       'cnnreciepts.Table = 
+        cnnreciepts.ResetAll
+        If cnnreciepts.Count <> 0 Then
+            cnnreciepts.Movelast
+        Endif
+      
+        'classes
+        displayenrolledclasses() 
+      
+        'Notes
+        displaynotes()
+      
+        pnldetails.Visible = True
+        btnUpdate.Tag = "" 'incase new record not added.
+        btnupdate.Visible = False
+    Endif
+    
+        
+      
+ 
+
+End
+Private Sub displaynotes()
+  cnnnotes.Cancel
+  cnnnotes.filter = "stuid = " & CStr(stuid.Text)
+  If cnnnotes.Count <> 0 Then
+    cnnnotes.MoveFirst()
+    notnote.Enabled = True
+  Else
+    notnote.Enabled = False  
+  Endif
+  
+  'New form not using db as mysql
+  
+  
+  
+End
+
+Public Sub Form_Open()
+
+  'set up recordset and default SQL
+  'cnnclass.Connection = basroutines.getconnection()
+  'cnnenroll.Connection = basroutines.getconnection()
+  ' cnnenrolledcls.Connection = basroutines.getconnection()
+  cnnnotes.Connection = basroutines.getconnection()
+  cnnreciepts.Connection = basroutines.getconnection()
+  loadedtv = False
+  setsqls()
+  stucnn = basroutines.getconnection()
+  loadstudentstv
+  basroutines.yubilastcheck = DateAdd(Now, gb.Minute, -3)
+  
+  
+
+End
+Private Sub setsqls()
+  'If c
+   curSQL = "SELECT * From tblstudents ORDER BY stuengfamname"
+  'curSQL = "SELECT * From tblstudents"
+End
+
+Private Sub loadstudentstv()
+
+  'Dim curclass As Result
+  Dim curcount As Long
+  Dim newsql As String
+  Dim curName As String
+
+  'loads the students into the  tree view
+  tvstudents.Clear
+  
+  'open rs and load details
+  
+  curRS = basroutines.getResult(curSQL, stucnn)
+  Wait 0.1
+  If Not Null Then
+    'we have a connection
+    '
+    'loop through all records and add.
+    For Each curRS
+      'add each record
+      'check if current
+      If chkonlycurrent.Value = True Then
+        newsql = "Select clsstuid From tblclsstudent Where stuid = " & curRS["stuid"] & " AND current = 1"
+        curcount = basroutines.getconnection().Exec(newsql).Count
+      Else
+        curcount = 1
+      Endif
+      
+      If curcount <> 0 Then 'display record
+      
+        curName = curRS["stuengfamname"] & ", " & curRS["stuenggivname"] & "(" & curRS["stuchifamname"] & curRS["stuchigivname"] & ") ID:" & curRS["stuid"]
+        tvstudents.Add(curRS["stuid"], curName, basroutines.getstupic(curRS["stupic"]))
+        Wait 0.1
+      End If
+    Next
+  Endif
+  loadedtv = True
+End
+
+
+Public Sub grpfields_KeyPress()
+
+  'show the update btn
+  btnupdate.Visible = True
+
+End
+
+Public Sub tvstudents_Select()
+
+  
+  Dim recordfound As Boolean
+  Dim myIndex As Integer
+  Dim myAnswer As Long
+  
+  '1st see if any changes and ask to update
+  If btnnotupdate.Visible Then
+    myAnswer = Message.Question("Do you wish to update this note?", "Yes", "No")
+    btnnotupdate.Visible = False 'need to reset no matter what
+    btnnotnew.Visible = True
+    If myAnswer = 1 Then
+      btnnotupdate_Click()
+    End If
+    
+  Endif
+  If btnUpdate.Visible = True And pnldetails.Visible = True Then
+    
+    myAnswer = Message.Question("Do you wish to update this record?", "Yes", "No")
+    btnUpdate.Visible = False 'need to reset no matter what
+    btnnew.Visible = True
+    If myAnswer = 1 Then
+      btnUpdate_Click()
+    End If
+  End If
+  
+  
+    
+ Try myIndex = CInt(tvstudents.Key)
+  
+  'Message(CStr(myIndex))
+  
+  If Not Error Then
+    
+   displayrecord(myIndex)
+   
+    
+  End If
+
+End
+
+Public Sub tvstudents_GotFocus()
+
+  
+
+End
+
+Public Sub stupic_DblClick()
+
+  'load a new picture
+  
+
+End
+
+Public Sub stupic_MouseDown()
+
+  
+
+End
+
+Public Sub txtsearch_KeyPress()
+  
+
+End
+
+Public Sub tvfindstudents()
+  
+  Dim strsearch As String
+  
+  strsearch = Trim(txtsearch.Text)
+  'search for student
+  If strsearch = "" Then
+    setsqls() 'reset to all
+  Else
+    'check type
+    If Not IsNull(Val(strsearch)) Then 'we have an id
+      'search on id only
+      curSQL = "SELECT * From tblstudents Where stuid = " & Val(strsearch) & " ORDER BY stuengfamname"
+    Else
+      
+      curSQL = "SELECT * From tblstudents Where stuengfamname LIKE '%" & strsearch & "%' ORDER BY stuengfamname"
+    End If
+      
+    
+  Endif
+    
+  loadstudentstv()
+  
+End
+
+
+Public Sub txtsearch_KeyRelease()
+
+  'If Key.Code = Key.Return Or Key.code = Key.Enter Then
+    tvfindstudents()
+ ' Endif
+
+End
+
+Public Sub btnsms1_Click()
+  Dim smsto As String
+  smsto = Replace(stuconmobphone.text, "+", "")
+  sendsms(smsto)
+  
+
+End
+Private Sub sendsms(smsto As String)
+  Dim cursmsfrm As New Frmsms
+  
+    cursmsfrm.txtto.Text = smsto
+    cursmsfrm.txtto.Tag = stuid.Text
+    cursmsfrm.ShowModal()
+    'refresh notes
+    displaynotes()
+    
+   
+  
+End
+
+
+Public Sub btnsms2_Click()
+
+  Dim smsto As String
+  smsto = Replace(stucon2mobphone.text, "+", "")
+  sendsms(smsto)
+
+End
+
+Public Sub btnreceipt_Click()
+  Dim newreceipt As New Frmreceipts
+  
+  newreceipt.recstuid.Text = stuid.Text
+  newreceipt.recstuname.Text = stuengname.Text
+  newreceipt.recstuname.tag = sturendate.Tag ' sets the rendate
+  newreceipt.recstuid.Tag = Replace(stuconmobphone.Text, "+", "")
+  
+  newreceipt.ShowModal()
+  
+  displayrecord(CInt(stuid.Text)) 'refresh record
+  
+  'refresh notes
+  displaynotes()
+  
+  
+
+End
+
+
+Public Sub cnnreciepts_MouseDown()
+
+  
+
+End
+Private Sub update_rendate(newdate As Date)
+  'Dim curres As Integer
+    If sturendate.Tag < newdate Or sturendate.Text = "" Then ' newer date
+      sturendate.Tag = newdate
+    
+      sturendate.Text = Format(newdate, "dd mmmm yyyy")
+    'sturendate.Update
+     ' Message.Info(sturendate.text)
+      'Message.Info(Format(newdate, "dd mmmm yyyy"))
+      ' If btnupdate.Visible Then 'check
+      '   If Message.Question("Do you wish to update student", "Yes", "No") = 1 Then
+      '     
+      '       btnupdate_Click() 'updates rec
+      '   Else
+      '     Message("You will need to click update again to Save Renewal date on student form.")
+      '   Endif
+      ' Else
+      '   btnupdate_Click() 'updates rec
+      ' Endif
+      btnupdate.Visible = True
+    Else
+      
+    Endif
+End
+
+
+Public Sub stutab_Click()
+
+  
+
+End
+
+Public Sub btnsave_Click()
+
+ ' If cnnreciepts.Modified = True 
+    Try update_rendate(recrendate.Value)
+    'btnupdate_Click() 'update
+    cnnreciepts.Save()
+    
+    
+  'End If
+
+End 
+
+Private Sub displayenrolledclasses()
+
+  Dim cnnenrolledcls As Result
+  
+  cnnenrolledcls = basroutines.getconnection().Exec("Select * From (tblclasses c Inner Join tbldays d On c.dayid = d.dayid) Inner Join  tblclsstudent s On s.clsid = c.clsid Where s.stuid = " & stuid.Text & " And s.current = 1")
+  
+  
+  tvstucls.Clear
+  
+  For Each cnnenrolledcls
+    tvstucls.Add(cnnenrolledcls["clsstuid"], cnnenrolledcls["dayday"] & " @ " & cnnenrolledcls["clstime"] & " - " & cnnenrolledcls["clsname"])
+    
+    
+  Next
+
+  
+  
+  
+End
+
+
+Public Sub btnaddclass_Click()
+Dim cnnenroll As Result
+Dim curindex As Long
+
+If btnaddclass.Text = "&Enroll" Then
+  'add class
+  cnnenroll = basroutines.getconnection().Exec("Select * From tblclsstudent Order By clsstuid")
+  If cnnenroll.count > 0 Then
+    cnnenroll.MoveLast
+    curindex = cnnenroll["clsstuid"] + 1
+  Else
+    curindex = 1
+  Endif
+  
+  cnnenroll = basroutines.getconnection().Create("tblclsstudent")
+  
+    cnnenroll["clsstuid"] = curindex
+    cnnenroll["stuid"] = CInt(stuid.Text)
+    cnnenroll["clsid"] = tvclass.Key
+    cnnenroll["current"] = True
+    cnnenroll["clsstart"] = Now
+    
+    
+    cnnenroll.Update
+    
+    btnaddclass.Text = "&Add Class" 
+    btnremove.Enabled = btnremove.tag
+    fradd.Visible = False
+    
+    displayenrolledclasses()
+      
+  
+Else
+  fradd.Visible = True
+  btnaddclass.Text = "&Enroll"
+  btnaddclass.Enabled = False
+  btnremove.tag = btnremove.Enabled
+  btnremove.Enabled = False
+  
+  
+Endif
+End
+
+
+
+Public Sub cboday_Click()
+
+  
+
+End
+
+Public Sub cboday_Change()
+
+  Dim dayid As Integer
+  'reccourse.Text = cboday.Text & " " & cbotime.Text & ", " & cboclass.Text
+  Select Case cboday.Text
+    Case "Monday"
+      dayid = 1
+    Case "Tuesday"
+       dayid = 2
+    Case "Wednesday"
+       dayid = 3
+    Case "Thursday"
+       dayid = 4
+    Case "Friday"
+       dayid = 5
+    Case "Saturday"
+       dayid = 6
+    Case "Sunday"
+       dayid = 7
+  End Select
+  
+  'update class list
+  displayclasslist(dayid)
+
+End
+Private Sub displayclasslist(dayid As Integer)
+
+  Dim cnnclass As Result
+  
+  cnnclass = basroutines.getconnection().Exec("Select * From tblclasses Where dayid = " & CStr(dayid) & " Order By clstime")
+  tvclass.Clear
+  
+  For Each cnnclass 
+    tvclass.Add(cnnclass["clsid"], cnnclass["clsname"] & " @" & cnnclass["clstime"])
+    
+  Next
+    
+  
+  
+  
+End
+
+
+
+
+
+Public Sub tvclass_Click()
+
+  If tvclass.Available Then
+  
+  End If
+
+End
+
+Public Sub tvclass_Select()
+
+    btnaddclass.Enabled = True
+
+End
+
+Public Sub btnremove_Click()
+
+  'set class to false and add end date
+  Dim upclasses As Result
+  
+  'upclasses = basroutines.getconnection().
+  
+  'latter check if class has no lesson
+  
+  upclasses = basroutines.getconnection().Edit("tblclsstudent", "clsstuid = &1", tvstucls.key)
+  
+  upclasses["current"] = False
+  upclasses["clsend"] = Now
+  
+  upclasses.Update
+  
+  displayenrolledclasses
+  
+  
+
+End
+
+Public Sub tvstucls_Select()
+
+  btnremove.Enabled = True
+  
+  
+
+End
+
+Public Sub btnnotupdate_Click()
+Dim nextid As Integer
+Dim rsnotes As Result
+
+  
+    If notdate.Value = "" Then notdate.Value = Now
+    If notid.Value = "" Then
+      'set id
+      rsnotes = basroutines.getconnection().Exec("Select notid From tblnotes Order By notid")
+      If rsnotes.Count = 0 Then
+        nextid = 1
+      Else
+        rsnotes.MoveLast
+        nextid = rsnotes["notid"] + 1
+      Endif
+      notid.Value = nextid
+      stuidnotes.value = CInt(stuid.Text)
+    Endif
+    cnnnotes.save
+    btnnotupdate.Visible = False
+    btnnotnew.Visible = True
+    
+    
+
+    
+
+End
+
+Public Sub btnnotnew_Click()
+Dim myResponse As Integer
+  If btnnotupdate.Visible = True Then
+    If Message.Question("Note needs updating. Do you wish to update?", "Yes", "No") = 1 Then
+      btnnotupdate_Click()
+    Else
+      cnnnotes.Cancel()  
+    Endif
+    
+    
+    
+  Endif
+  
+  cnnnotes.Create()
+  notnote.Enabled = True
+  btnnotupdate.Visible = True
+  btnnotnew.Visible = False
+    
+
+End
+
+Public Sub brnotes_MouseDown()
+
+  
+
+End
+
+Public Sub notnote_KeyPress()
+
+  btnnotupdate.Visible = True
+  
+
+End
+
+Public Sub tvstudents_Click()
+
+  
+
+End
+
+Public Sub recrendate_MouseDown()
+
+  
+
+End
+
+Public Sub recrendate_Validate(Value As Variant)
+  
+  'ask to update renewal date
+  If Message.Question("Do you wish to update the students renewal date?", "Yes", "No") = 1 Then
+    sturendate.Tag = value
+    sturendate.Text = Format$(value, "dd mmm yy")
+    btnupdate.Visible = True
+    
+  Endif
+  
+
+End
+
+Public Sub chkonlycurrent_Click()
+
+  tvfindstudents()
+
+End
+
+Public Sub stuprint_Click()
+
+  btnupdate.Visible = True
+
+End
+
+Public Sub stuprint_KeyPress()
+
+  btnupdate.Visible = True
+
+End
+
+Public Sub stumaxdeduct_Change()
+
+  btnupdate.Visible = True
+
+End
+
+Public Sub recusedcr_MouseDown()
+
+  
+
+End
+
+Public Sub Form_Close()
+  Me.Hide
+  Stop Event
+
+End

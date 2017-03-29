@@ -1,0 +1,144 @@
+' Gambas class file
+
+
+Public Sub chkallcurrent_Click()
+
+  If chkallcurrent.Value = 0 Then
+    'only selected
+    cnnstucards.Table = "sql_idcards"
+  
+  Else
+    'all current
+    cnnstucards.Table = "sql_idcards_all"
+  Endif
+
+End
+
+Public Sub Form_Open()
+
+  cnnstucards.Connection = basroutines.getconnection()
+  
+
+End
+
+
+
+Public Sub btnexport_Click()
+
+  Dim cursql As String
+  Dim curfile As String
+  Dim curfields As String
+  Dim curcmd As String
+  Dim expfile As File
+  Dim curcard As Result
+
+ 
+  
+  'export to file
+  
+  'cnnstucards.
+  ' "/home/steven/ownCloud/CharismaDatabase/sqlexport"
+  
+ curfile = "/home/steven-charisma/ownCloud/documents/Database/Student Cards/SQLfiles/studentsnew.csv"
+ ' curfile =  curfile = '
+  Try Kill curfile
+  
+ '  cursql = "Select * INTO OUTFILE '" & curfile & "'"
+ '  cursql = cursql & " FIELDS OPTIONALLY ENCLOSED BY '" & Chr$(34) & "'"
+ '  cursql &= " TERMINATED BY ','"
+ ' ' cursql &= " ESCAPED BY '" & Chr$(34) & "'"
+ '  cursql &= " LINES TERMINATED BY '\n' "
+ '  
+ '  cursql &= " From " & cnnstucards.Table & ";"
+ '  
+ '  
+ '  basroutines.getconnection().Exec(cursql)
+ '  'add field names
+ '  'sed -i '1s/^/your text\n/' file
+ '  curfields = Chr$(34) & "stuid" & Chr$(34) & "," & Chr$(34) & "barcode" & Chr$(34) & "," & Chr$(34) & "stuname" & Chr$(34) & "," & Chr$(34) & "studob" & Chr$(34) & "," & Chr$(34) & "stupic" & Chr$(34) 
+ '  'printf '%s\n' '"stuid","barcode","stuname","dob","stupic"' | cat - '/home/steven-charisma/ownCloud/documents/Database/Student Cards/SQLfiles/studentsnew.csv' > t5.txt
+ '   '  
+ '   
+ '  curcmd = "printf '%s\n' '" & curfields & "' | cat - '/home/steven-charisma/ownCloud/documents/Database/Student Cards/SQLfiles/studentsnew.csv' > '" & curfile & ".new'" 
+ '  
+ '  Shell curcmd Wait
+ '  Try Kill curfile
+ '  
+ '  curcmd = "mv '" & curfile & ".new' '" & curfile & "'"
+ '  Shell curcmd Wait
+ '  
+ expfile = Open curfile For Create
+ Close #expfile
+ expfile = Open curfile For Write
+
+ 
+ 'write each line
+ 
+ 'header
+ curfields = Chr$(34) & "stuid" & Chr$(34) & "," & Chr$(34) & "barcode" & Chr$(34) & "," & Chr$(34) & "stuname" & Chr$(34) & "," & Chr$(34) & "studob" & Chr$(34) & "," & Chr$(34) & "stupic" & Chr$(34) 
+  Print #expfile, curfields
+  
+  'loop though data
+  If chkallcurrent.Value = True Then
+    curcard = basroutines.getconnection().Exec("Select * From sql_idcards_all")
+  Else
+    curcard = basroutines.getconnection().Exec("Select * From sql_idcards")
+    
+  Endif
+  
+ For Each curcard
+    curfields = Chr$(34) & curcard["stuid"] & Chr$(34) & "," & Chr$(34) & curcard["stubarcode"] & Chr$(34) & "," & Chr$(34) & curcard["stuengfamname"] & Chr$(34) & "," & Chr$(34) & curcard["studob"] & Chr$(34) & "," & Chr$(34) & curcard["stupic"] & Chr$(34) 
+   Print #expfile, curfields
+   
+ Next
+ 
+ Close #expfile
+ 
+ 
+ 
+  If chkremove.Value = True Then
+    
+    cursql = "Update tblstudents Set stuprint = 0;"
+    basroutines.getconnection().Exec(cursql)
+    chkallcurrent.Value = True
+    chkallcurrent_Click()
+    
+     
+  Endif
+
+  Message.Info("Exported")
+  
+End
+
+Public Sub cnnstucards_Change()
+  Dim newh As Integer
+  
+  'see if this updates the picture
+  stupic.Picture = Null
+  stupic.Stretch = False
+ Try stupic.Picture = Picture.Load(cnnstucards["stupic"])
+ If Not Error Then ' resize
+  'newh = stupic.h / (stupic.Picture.Image.H / stupic.Picture.Image.W)
+  
+  'stupic.H = newh
+  
+  stupic.Stretch = True
+End If
+
+  
+ 
+ 
+ 
+
+End
+
+Public Sub brstucards_DblClick()
+
+  frmstudents.Show
+  frmstudents.txtsearch.Text = cnnstucards["stuid"]
+  frmstudents.tvfindstudents()
+  frmstudents.tvstudents.MoveFirst
+  frmstudents.tvstudents.Item.Selected = True
+  
+  
+End

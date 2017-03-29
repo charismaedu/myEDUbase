@@ -1,0 +1,19 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,100,65)
+  Font = Font["URW Gothic L"]
+  Background = &H007FFF&
+  { TextLabel1 TextLabel
+    MoveScaled(2,1,40,5)
+    Font = Font["URW Gothic L,+7"]
+    Foreground = Color.LightForeground
+    Text = ("Settings:")
+  }
+  { TextLabel2 TextLabel
+    MoveScaled(3,1,40,5)
+    Font = Font["URW Gothic L,+7"]
+    Foreground = Color.White
+    Text = ("Settings:")
+  }
+}

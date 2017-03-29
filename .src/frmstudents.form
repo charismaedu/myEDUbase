@@ -1,0 +1,461 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,137,103)
+  Font = Font["URW Gothic L"]
+  Background = &H007FFF&
+  Text = ("Charsima Education - Students ...")
+  { lblname Label
+    MoveScaled(35,0,28,5)
+    #Translate = False
+    Font = Font["URW Gothic L,Bold,+3"]
+    Text = "Student Details"
+  }
+  { !txtsearch TextBox
+    MoveScaled(2,1,32,4)
+    #Public = True
+    #Translate = False
+    Background = Color.Background
+    Expand = True
+  }
+  { btnupdate Button
+    MoveScaled(101,1,13,4)
+    Visible = False
+    Text = ("Update")
+  }
+  { btnnew Button
+    MoveScaled(115,1,13,4)
+    Text = Shortcut(("New"), "N")
+  }
+  { pnldetails Panel
+    MoveScaled(35,5,93,96)
+    Visible = False
+    Background = &H007FFF&
+    { Label1 Label
+      MoveScaled(1,3,8,4)
+      Text = ("Name:")
+    }
+    { stuengname TextBox grpfields
+      Name = "stuengname"
+      MoveScaled(10,3,26,4)
+      Text = ("stuengname")
+    }
+    { Label2 Label
+      MoveScaled(10,0,24,4)
+      Text = ("English")
+    }
+    { stuchiname TextBox grpfields
+      Name = "stuchiname"
+      MoveScaled(37,3,24,4)
+      Text = ("stuchiname")
+    }
+    { Label3 Label
+      MoveScaled(37,0,24,4)
+      Text = ("Chinese")
+    }
+    { Label4 Label
+      MoveScaled(76,3,4,4)
+      Text = ("ID:")
+    }
+    { stuid TextBox grpfields
+      Name = "stuid"
+      MoveScaled(82,3,8,4)
+      Text = ("stuid")
+      ReadOnly = True
+    }
+    { btndob Button
+      MoveScaled(33,8,3,4)
+      Text = ("") & "..."
+    }
+    { dobchooser DateChooser
+      MoveScaled(37,8,30,20)
+      Visible = False
+    }
+    { studob TextBox grpfields
+      Name = "studob"
+      MoveScaled(10,8,22,4)
+      Tag = "06/07/2014"
+      Text = ("studob")
+      ReadOnly = True
+    }
+    { Label5 Label
+      MoveScaled(1,8,5,4)
+      Text = ("DOB:")
+    }
+    { stucurschool TextBox grpfields
+      Name = "stucurschool"
+      MoveScaled(10,13,26,4)
+      Text = ("stucurschool")
+    }
+    { Label7 Label
+      MoveScaled(1,13,8,4)
+      Text = ("School:")
+    }
+    { stucuryear TextBox grpfields
+      Name = "stucuryear"
+      MoveScaled(10,18,13,4)
+      Text = ("stucuryear")
+    }
+    { Label8 Label
+      MoveScaled(0,18,8,4)
+      Text = ("Year:")
+      Alignment = Align.Right
+    }
+    { sturendate TextBox
+      MoveScaled(68,23,23,4)
+      ReadOnly = True
+    }
+    { Label20 Label
+      MoveScaled(69,19,18,4)
+      Text = ("Renewal Date:")
+    }
+    { stutab TabStrip
+      MoveScaled(2,28,89,66)
+      Count = 4
+      Index = 0
+      Text = ("Contact Details")
+      { Label6 Label
+        MoveScaled(2,2,14,6)
+        Text = ("Primary\nContact Name:")
+      }
+      { stuconengname TextBox grpfields
+        Name = "stuconengname"
+        MoveScaled(18,4,30,4)
+        Text = ("stuconengname")
+      }
+      { stuconchiname TextBox grpfields
+        Name = "stuconchiname"
+        MoveScaled(49,4,20,4)
+        Text = ("stuconchiname")
+      }
+      { Label9 Label
+        MoveScaled(49,1,24,4)
+        Text = ("Chinese")
+      }
+      { Label10 Label
+        MoveScaled(18,1,24,4)
+        Text = ("English")
+      }
+      { stuconaddress TextArea grpfields
+        Name = "stuconaddress"
+        MoveScaled(18,9,30,14)
+        Text = ("stuconaddress")
+      }
+      { Label11 Label
+        MoveScaled(2,9,10,4)
+        Text = ("Address:")
+      }
+      { stuconphone TextBox grpfields
+        Name = "stuconphone"
+        MoveScaled(66,9,17,4)
+        Text = ("stuconphone")
+      }
+      { stuconmobphone TextBox grpfields
+        Name = "stuconmobphone"
+        MoveScaled(66,14,17,4)
+        Text = ("stuconmobphone")
+      }
+      { stuconemail TextBox grpfields
+        Name = "stuconemail"
+        MoveScaled(59,19,24,4)
+        Text = ("stuconemail")
+      }
+      { btnemail Button
+        MoveScaled(84,19,2,4)
+        Text = ("") & "..."
+      }
+      { Label12 Label
+        MoveScaled(49,19,7,4)
+        Text = ("E-mail:")
+      }
+      { Label13 Label
+        MoveScaled(49,14,16,4)
+        Text = ("Mobile:")
+      }
+      { Label14 Label
+        MoveScaled(49,9,14,4)
+        Text = ("Phone:")
+      }
+      { Label15 Label
+        MoveScaled(3,26,10,6)
+        Text = ("Contact 2\nName:")
+      }
+      { Label16 Label
+        MoveScaled(18,24,24,4)
+        Text = ("English")
+      }
+      { stucon2engname TextBox grpfields
+        Name = "stucon2engname"
+        MoveScaled(18,27,30,4)
+        Text = ("stucon2engname")
+      }
+      { Label17 Label
+        MoveScaled(49,23,24,4)
+        Text = ("Chinese")
+      }
+      { stucon2chiname TextBox grpfields
+        Name = "stucon2chiname"
+        MoveScaled(49,27,20,4)
+        Text = ("stucon2chiname")
+      }
+      { stucon2phone TextBox grpfields
+        Name = "stucon2phone"
+        MoveScaled(65,32,18,4)
+        Text = ("stucon2phone")
+      }
+      { Label18 Label
+        MoveScaled(48,32,14,4)
+        Text = ("Phone:")
+      }
+      { Label19 Label
+        MoveScaled(48,37,16,4)
+        Text = ("Mobile:")
+      }
+      { stucon2mobphone TextBox grpfields
+        Name = "stucon2mobphone"
+        MoveScaled(65,37,18,4)
+        Text = ("stucon2mobphone")
+      }
+      { stuconnoemail CheckBox grpfields
+        Name = "stuconnoemail"
+        MoveScaled(3,36,42,4)
+        Text = ("Contact does not want email or Telegram")
+      }
+      { btnsms1 Button
+        MoveScaled(84,14,2,4)
+        ToolTip = ("Send sms")
+        Text = ("") & "..."
+      }
+      { btnsms2 Button
+        MoveScaled(84,37,2,4)
+        ToolTip = ("Send sms")
+        Text = ("") & "..."
+      }
+      { Frame1 Frame
+        MoveScaled(4,43,81,16)
+        Text = ("Credit")
+        { Label26 Label
+          MoveScaled(3,3,11,4)
+          Text = ("Balance")
+        }
+        { stucredit TextBox
+          MoveScaled(24,3,24,4)
+          ReadOnly = True
+        }
+        { Label27 Label
+          MoveScaled(3,9,17,4)
+          Text = ("Max per Class")
+        }
+        { stumaxdeduct TextBox
+          MoveScaled(24,9,24,4)
+        }
+        { btnreset Button
+          MoveScaled(61,8,16,4)
+          Text = ("Reset to Zero")
+        }
+      }
+      Index = 1
+      Text = ("Classes")
+      { btnaddclass Button
+        MoveScaled(71,43,16,4)
+        Text = Shortcut(("Add Class"), "A")
+      }
+      { btnremove Button
+        MoveScaled(71,29,16,4)
+        Enabled = False
+        Expand = True
+        Text = Shortcut(("Remove"), "R")
+      }
+      { tvstucls TreeView
+        MoveScaled(2,2,85,26)
+      }
+      { fradd Frame
+        MoveScaled(2,29,68,18)
+        Visible = False
+        { cboday ComboBox
+          MoveScaled(1,1,21,4)
+          List = [("Monday"), ("Tuesday"), ("Wednesday"), ("Thursday"), ("Friday"), ("Saturday"), ("Sunday")]
+        }
+        { tvclass TreeView
+          MoveScaled(23,1,43,16)
+        }
+      }
+      Index = 2
+      Text = ("Notes")
+      { cnnnotes DataSource
+        MoveScaled(1,1,86,58)
+        Table = "tblnotes"
+        { brnotes DataBrowser
+          MoveScaled(2,19,83,37)
+          CanCreate = False
+          Columns = ["notdate", "notnote"]
+          Labels = ["Date", "Note"]
+        }
+        { notid DataControl
+          MoveScaled(1,1,4,4)
+          Enabled = False
+          Field = "notid"
+        }
+        { notdate DataControl
+          MoveScaled(6,1,24,4)
+          Enabled = False
+          Field = "notdate"
+        }
+        { notnote DataControl
+          MoveScaled(6,6,79,11)
+          Enabled = False
+          Field = "notnote"
+        }
+        { btnnotnew Button
+          MoveScaled(68,1,16,4)
+          Text = Shortcut(("New Note"), "N")
+        }
+        { btnnotupdate Button
+          MoveScaled(51,1,16,4)
+          Visible = False
+          Text = Shortcut(("Update Note"), "U")
+        }
+        { stuidnotes DataControl
+          MoveScaled(42,1,8,4)
+          Enabled = False
+          Field = "stuid"
+        }
+        { Label25 Label
+          MoveScaled(37,1,4,4)
+          Text = ("ID:")
+        }
+      }
+      Index = 3
+      Text = ("Receipt")
+      { cnnreciepts DataSource
+        MoveScaled(1,2,86,62)
+        Font = Font["URW Gothic L"]
+        AutoResize = True
+        Spacing = True
+        Table = "tblreceipts"
+        { dtareciept DataBrowser
+          MoveScaled(1,1,18,59)
+          CanCreate = False
+          Columns = ["recnumber", "recdate"]
+        }
+        { recid DataControl
+          MoveScaled(20,1,7,4)
+          Enabled = False
+          Field = "recid"
+        }
+        { recno DataControl
+          MoveScaled(37,1,20,4)
+          Field = "recnumber"
+        }
+        { Label21 Label
+          MoveScaled(28,1,7,4)
+          Text = ("RecNo:")
+        }
+        { Label22 Label
+          MoveScaled(58,1,6,4)
+          Text = ("Date:")
+        }
+        { recdate DataControl
+          MoveScaled(64,1,21,4)
+          Field = "recdate"
+        }
+        { reccourse DataControl
+          MoveScaled(21,11,41,9)
+          Field = "reccourse"
+        }
+        { recnooflessons DataControl
+          MoveScaled(64,12,7,4)
+          Field = "recnolessons"
+        }
+        { recrate DataControl
+          MoveScaled(72,12,13,4)
+          Field = "recrate"
+        }
+        { recdis DataControl
+          MoveScaled(72,17,13,4)
+          Field = "recdis"
+        }
+        { recdates DataControl
+          MoveScaled(21,22,41,8)
+          Field = "recdates"
+        }
+        { reccourseamt DataControl
+          MoveScaled(65,22,20,4)
+          Field = "reccourseamt"
+        }
+        { recoth DataControl
+          MoveScaled(21,34,41,7)
+          Field = "recoth"
+        }
+        { Label23C Label
+          MoveScaled(21,7,24,5)
+          Text = ("Course Payments:")
+        }
+        { Label23 Label
+          MoveScaled(21,30,18,4)
+          Text = ("Other Payments:")
+        }
+        { recothdis DataControl
+          MoveScaled(74,32,11,4)
+          Field = "recothdis"
+        }
+        { recothamt DataControl
+          MoveScaled(65,37,20,4)
+          Field = "recothamt"
+        }
+        { recchq DataControl
+          MoveScaled(40,53,21,7)
+          Field = "recchq"
+        }
+        { rectotal DataControl
+          MoveScaled(63,54,20,6)
+          Font = Font["+5"]
+          Foreground = Color.Blue
+          Field = "rectotal"
+        }
+        { btnsave Button
+          MoveScaled(21,53,18,4)
+          Text = Shortcut(("Update"), "U")
+        }
+        { recrendate DataControl
+          MoveScaled(64,7,21,4)
+          Field = "recrendate"
+        }
+        { Label24 Label
+          MoveScaled(43,7,17,4)
+          Text = ("Renewal Date:")
+          Alignment = Align.Right
+        }
+        { recmessage DataControl
+          MoveScaled(21,42,64,9)
+          Field = "recmessage"
+        }
+        { recusedcr DataControl
+          MoveScaled(68,27,17,4)
+          Field = "recusedcr"
+        }
+      }
+      Index = 0
+    }
+    { stupic PictureBox
+      MoveScaled(79,8,10,12)
+    }
+    { stuprint CheckBox
+      MoveScaled(10,23,24,4)
+      Text = ("Print ID")
+    }
+  }
+  { !tvstudents TreeView
+    MoveScaled(2,5,32,96)
+    #Public = True
+  }
+  { btnreceipt Button
+    MoveScaled(84,1,16,4)
+    Text = ("New Reciept")
+  }
+  { chkonlycurrent CheckBox
+    MoveScaled(59,1,24,4)
+    Text = ("Show only current.")
+    Value = CheckBox.True
+  }
+}

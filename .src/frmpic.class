@@ -1,0 +1,80 @@
+' Gambas class file
+
+Private Rotation As String = "land"
+Private ratio As Float = 1
+Private canclose As Boolean = False
+Private allowresize As Boolean = True
+
+
+' Gambas class file
+Public Function setpicture(picpath As String)
+  Dim curpicture As Picture
+  picrec.Picture = Null
+  If Exist(picpath) Then
+    curpicture = Picture.Load(picpath)
+    'set portriat or landscape
+    If curpicture.W < curpicture.H Then
+      'portriat
+      Rotation = "por"
+      ratio = curpicture.W / curpicture.H
+    Else
+      Rotation = "lan"
+      ratio = curpicture.H / curpicture.W
+    Endif
+    picrec.Picture = curpicture  
+  Endif
+  
+  
+  Form_Resize()
+  
+End
+
+Public Sub forceclose()
+  
+  canclose = True
+  Me.Close
+End
+
+
+
+Public Sub Form_Resize()
+
+If allowresize Then
+   picrec.Stretch = True
+ If Rotation = "por" Then
+   'hieght grater
+    picrec.Move(0, 0, Me.H * ratio, Me.H)
+   
+  Else
+    'hieght grater
+    picrec.Move(0, 0, Me.w, Me.w * ratio)
+   
+   
+ Endif
+ 
+  allowresize = False
+  Me.H = picrec.H
+  Me.W = picrec.W
+  allowresize = True
+Endif
+
+
+ 
+
+
+End
+
+Public Sub Form_Close()
+
+  If canclose = False Then
+    Stop Event
+    
+  Endif
+
+End
+
+Public Sub Form_Open()
+
+  
+
+End

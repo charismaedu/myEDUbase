@@ -1,0 +1,14 @@
+' Gambas class file
+
+
+Public Sub Form_Open()
+
+  
+
+End
+Public Sub setrecno(currecno As String)
+  
+  'this will look up the reciept and display
+  
+  
+End

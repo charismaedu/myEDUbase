@@ -1,0 +1,615 @@
+' Gambas module file
+
+Public curusrlogin As String
+Public yubilastcheck As Date = Now
+Public cnnCharismaEDU As New Connection
+Public expenceimgpath As String = "/home/steven-charisma/ownCloud/documents/Accounts/Paid Receipts/2016-17/"
+Public stupicpath As String = "/home/steven-charisma/ownCloud/documents/Database/Student Cards/Student Photos"
+Public sshproc As Process
+Public sshconnec As Boolean
+
+
+
+' this will store the common routines for the program.
+
+Private Sub openshhcnnv(reset As Boolean) 
+  
+  'opens port 9000 and makes a persistant connection via ssh
+  If reset = True Then 
+    'close connection
+  
+  ' Try sshproc.Kill
+    Shell "lsof -ti:9000 | xargs kill -9" Wait 'just in case no process
+  Endif
+  
+  sshproc = Shell "ssh -L 9000:localhost:3306 steven@db.charismaedu.hk" For Read Write
+  
+  sshconnec = True
+  
+  
+  
+  
+End
+
+
+Public Function getconnection() As Connection
+  Dim ncon As New Connection
+  
+  ' 'set up a new connect to the data base
+  ' ncon.Type = "sqlite3"
+  ' ncon.Host = "/home/steven-charisma/ownCloud/documents/Database"
+  ' ncon.Name = "charismaeducation"
+
+'set up connection if not made
+
+  If cnnCharismaEDU.Opened = False Then
+    If dbconnect() = False
+  ' 
+        Return Null
+    Else
+      
+       Return cnnCharismaEDU
+       
+   Endif
+  
+  End If
+  
+  Return cnnCharismaEDU
+ 
+  
+  
+  
+  '
+  
+  
+End
+Public Function dbconnect() As Boolean
+Dim i As Integer
+
+  cnnCharismaEDU.Close
+    
+   cnnCharismaEDU.Type = "mysql"
+   cnnCharismaEDU.Host = "127.0.0.1"
+    'cnnCharismaEDU.Host = "188.166.251.47"
+    cnnCharismaEDU.Port = "9000"
+    cnnCharismaEDU.user = "chaedu"
+    cnnCharismaEDU.Password = "91943430"
+    cnnCharismaEDU.Name = "charismaedu"
+  
+  'open ssh connection 'assume 
+    openshhcnnv(True)
+  For i = 1 To 3
+    Wait 1
+    Try cnnCharismaEDU.Open
+    If Not Error Then 
+      i = 3
+    End If
+  Next
+  
+  If cnnCharismaEDU.Opened = False Then 'no connection we failed
+     Message("Unable to open database contact administrator!")
+     Quit
+  End If
+  
+ Return True
+       
+ 
+  
+End
+
+Public Function getResult(sql As String, mycon As Connection) As Result
+
+
+  
+  Dim newresult As Result
+  'returns the result of a specified sql statement
+  'should put here any escaping sql injection tests etc
+  
+  'assume open connection
+  
+  Try newresult = mycon.Exec(sql) 
+  
+  If Error Then
+    Message("Unable to excute query : (" & sql & ")")
+    Return Null
+      
+  Else
+    Return newresult
+  
+  End If
+      
+   
+  
+  
+End
+
+Public Function setcbobox(curcbox As ComboBox, curkey As Integer, mycnn As Connection) As ComboBox
+  Dim myValues As Result
+  
+  '' Returns the default values and sets them up in a combobox
+  
+  'retrive the key
+  myValues = getResult("Select * From tbldefaults Where defparentid = " & CStr(curkey) & " Order By deforder", mycnn)
+  
+  If myValues.Count = 0 Then 
+    'we have a problem
+    Message.Error("No values found for key. Please check the key")
+       
+  
+  Else
+    'all okay load keys to combo box
+    curcbox.Clear
+    myValues.MoveFirst
+    
+    For Each myValues
+      curcbox.Add(myValues!defvalue)
+      
+      myValues.MoveNext
+      
+    Next
+    
+    
+    
+  Endif
+  
+  Return curcbox
+  
+  
+  
+  
+  
+End
+Public Sub printreceipt(curreceipt As Integer)
+  Dim recHTML As String
+  Dim curCnn As Connection
+  Dim curRS As Result
+  Dim curReport As Result
+  Dim curmfield As String[] 'the names of the merger fields
+  Dim curlfields As String[] 'the names of the link fields
+  Dim curSQL As String
+  Dim disccor As Long
+  Dim disoth As Long
+  Dim cortotal As Long
+  Dim othtotal As Long
+  
+  
+  
+  curcnn = getconnection()
+  
+  'find record
+  curSQL = "Select * From tblstudents,tblReceipts Where recid  = " & CStr(curreceipt) & " AND stuid = recstuid"
+  curRS = getResult(curSQL, curcnn)
+  
+  'getreport
+  curSQL = "Select * From tblreports Where repid  = 1" '1 = is the receipt report details
+  curReport = getResult(curSQL, curcnn)
+  
+  'Load HTML from result
+  recHTML = curReport["rephtml"]
+  'Fields
+  'curmfields = Split("<<recno>>,<<date>>,<<stuname>>,<<conname>>,<<conphone>>,<<dateren>>,<<cor1>>,<<cordates>>,<<cortotal>>,<<other>>,<<othertotal>,<<payment>>,<<subtotal>>,<<disc>>,<<total>>", ",")
+ ' curlfields = Split("recnumber,recdate,stuengfamname,stuconengfamname,stuconphone,recrendate,reccourse,recdates,reccourseamt+recdis,recoth,recothamt+recothdis,recchq,reccourseamt+recdis+recdis+recothdis,recdis+recothdis,rectotal", ",")
+  
+  
+  'Linked fields
+  'recnumber,recdate,stuengfamname,stuconengfamname,stuconphone,recrendate,reccourse,recdates,reccourseamt+recdis,recoth,recothamt+recothdis,recchq,reccourseamt+recdis+recdis+recothdis,recdis+recothdis,rectotal
+  
+  'creates the receipt and cunverts is to a pdf and opens the resulting file
+  'replace all of the merge fields
+
+  
+
+  ',recothamt+recothdis,recchq,reccourseamt+recdis+recdis+recothdis,recdis+recothdis,rectotal
+
+  'totalcor
+  curRS.MoveFirst
+  
+  cortotal = curRS["recnolessons"] * curRS["recrate"]
+  
+  'discount forr course
+  disccor = cortotal - curRS["reccourseamt"]
+  
+  'othtotal
+  othtotal = CLong(curRS["recothamt"] / (100 - curRS["recothdis"]) * 100)
+  
+  'discount oth
+  disoth = othtotal - curRS["recothamt"]
+  
+  
+ '--recno--
+  recHTML = Replace(recHTML, "--recno--", CStr(curRS["recnumber"]))
+  
+  '--date--
+  recHTML = Replace(recHTML, "--date--", Format(curRS["recdate"], "dd mmmm yy"))
+  
+  '--stuname--
+  recHTML = Replace(recHTML, "--stuname--", CStr(curRS["stuengfamname"]))
+  
+  '--conname--
+  recHTML = Replace(recHTML, "--conname--", CStr(curRS["stuconengfamname"]))
+  
+  '--conphone--
+  recHTML = Replace(recHTML, "--conphone--", CStr(curRS["stuconphone"]))
+  
+  '--dateren--
+  recHTML = Replace(recHTML, "--dateren--", CStr(curRS["recrendate"]))
+  
+  '--cor1--
+  recHTML = Replace(recHTML, "--cor1--", CStr(curRS["reccourse"]))
+  
+  '--cortotal--
+  recHTML = Replace(recHTML, "--cortotal--", CStr(cortotal))
+  
+  '--cordates--
+  recHTML = Replace(recHTML, "--cordates--", CStr(curRS["recdates"]))
+  
+  '--other--
+  recHTML = Replace(recHTML, "--other--", CStr(curRS["recoth"]))
+  
+  '--othertotal>
+  recHTML = Replace(recHTML, "--othertotal>", CStr(othtotal))
+  
+  '--payment--
+  recHTML = Replace(recHTML, "--payment--", CStr(curRS["recchq"]))
+  
+  '--subtotal--
+  recHTML = Replace(recHTML, "--subtotal--", CStr(cortotal + othtotal))
+  
+  '--disc--,
+  recHTML = Replace(recHTML, "--disc--", CStr(disoth + disccor))
+  
+  
+  '--total--
+  recHTML = Replace(recHTML, "--total--", CStr(curRS["rectotal"]))
+  
+  
+  'now save and conv and show
+  
+  Print recHTML
+  Message("Done")
+  
+  
+  
+End
+Public Function otpcheck(otp As String, Optional usrid As Integer = 0) As Boolean
+  
+  Dim id As String
+  Dim nonce As String
+  Dim curletter As Integer
+  Dim randlen As Integer
+  Dim i As Integer
+  Dim urlpath As String
+  Dim urlresult As String
+  
+  
+  id = 26926
+  randlen = Rand(25, 40)
+  otp = LCase(otp)
+  nonce = ""
+  For i = 1 To randlen
+    'get random letter
+    ' Repeat
+     curletter = Rand(97, 122)
+     'Until curletter <= 122 Or curletter >= 97
+    
+    nonce = nonce & Chr$(curletter) 'letters a to z
+    
+  Next
+  
+  'https://api2.yubico.com/wsapi/2.0/verify?id=26926&otp=ccccccdltbtngfujuiibdjiedhfnfvkcdvkcdbgkkbdg&nonce=IfEEqodYgScaS/f9tuJBj76U7ao=
+  
+  'many api url we will just do this one
+  
+  urlpath = "https://api2.yubico.com/wsapi/2.0/verify?"
+  
+  'id
+   urlpath = urlpath & "id=" & CStr(id)
+  'otp
+   urlpath = urlpath & "&otp=" & Trim(otp)
+   'nonce
+   urlpath = urlpath & "&nonce=" & nonce
+   
+   'add cmd for shell cmd
+   urlpath = "wget -O - -o /dev/null '" & urlpath & "'" 
+   'check otp
+   Shell urlpath To urlresult
+   
+   If InStr(urlresult, "status=OK") <> 0 Then
+     'yubikey oK
+     'check that matches user
+     If usrid = 0 Then
+        'just return true
+        Return True
+     Else 
+       'check that ID's match
+       
+       If checkuserYubi(usrid, otp) Then
+         'user matches key
+         Return True
+       Else
+         Return False
+       Endif
+      
+     Endif
+     
+   Else
+     Return False
+   Endif
+  
+  
+  
+  
+End
+
+Public Function checkuserYubi(usrid As Integer, otp As String, Optional usrname As String = "") As Boolean
+  
+  Dim usryubiid As String
+  Dim usryubikey As String
+  Dim otpid As String
+  Dim curresult As Result
+  
+  
+  'compare ID's to see if remove the last 32chars from the string and return the remaining these should match
+  
+    yubilastcheck = Now    
+  
+    'retrive uesrid yubikey from dbase
+    If usrname <> "" Then
+      curresult = basroutines.getconnection().Exec("Select usryubikey From tblusers Where usrlogin = '" & usrname & "'")
+    Else
+      curresult = basroutines.getconnection().Exec("Select usryubikey From tblusers Where usrid = " & CStr(usrid))  
+    Endif
+    
+    
+    If curresult.Count <> 0 Then 'found user
+      usryubikey = curresult["usryubikey"]
+    Else
+      'no user found
+      Message.Error("Can not find user " & usrname & ".")
+      Return False
+    Endif
+    
+    'now find ids
+    
+    usryubiid = Left(usryubikey, -32)
+    otpid = Left(otp, -32)
+    
+    If usryubiid = otpid Then
+      Return True
+    Else
+      Message.Error("YubiKey does not match.")
+      Return False
+      
+    Endif
+    
+  
+End
+Public Sub addstunote(stuid As Long, curnote As String)
+  Dim upnote As Result
+  Dim i As Long
+  
+  'add note
+      'get next id
+      upnote = basroutines.getconnection().Exec("Select notid from tblnotes Order By notid")
+      If upnote.Count <> 0 Then
+        upnote.MoveLast
+        i = upnote["notid"] + 1
+      Else
+        i = 1
+      Endif
+      
+      upnote = basroutines.getconnection().Create("tblnotes")
+        upnote["notid"] = i
+        upnote["stuid"] = stuid
+        upnote["notdate"] = Now
+        upnote["notnote"] = curnote
+      upnote.Update
+    
+  
+  
+End
+Public Function pictureload(curpicture As String) As Picture
+
+  'this takes a blob and converts it to a picture
+  Dim tmpfile As New Picture
+  Dim tmppath As String
+  
+  tmppath = Temp() & ".png"
+    
+  File.Save(tmppath, curpicture)
+  'tmppath = Replace(tmppath, ".tmp", ".png")
+  Try tmpfile = Picture.Load(tmppath)
+  
+  Kill tmppath
+  
+  Return tmpfile
+  
+  
+End
+Public Function picturesave(curpicture As String) As String
+  'converts a picture to a sring
+  
+  Dim tmpfile As New Image
+  Dim tmppath As String
+  Dim tmpfiletext As String
+  
+  
+  
+  tmpfile = Image.Load(curpicture)
+  tmppath = Temp() & ".png"
+  
+  'resize reduce to 25%
+  
+  tmpfile = tmpfile.Stretch(tmpfile.W * 0.25, tmpfile.H * 0.25)
+  
+  
+  
+  
+  
+  'tmppath = Replace(tmppath, ".tmp", ".png")
+  tmpfile.Save(tmppath)
+  'curpicture.Resize(curpicture.
+  tmpfiletext = File.Load(tmppath)
+  
+  Kill tmppath
+  
+  Return tmpfiletext
+  
+  
+  
+  
+  
+  
+  
+End
+
+
+
+Public Function checkpassword(usrlogin As String, usrpass As String, Optional usrid As Integer = 0) As Boolean
+  
+  Dim curresult As Result
+  Dim curmessage As String
+  Dim usrpasssalthash As String
+  
+  
+  'look up by id if known then by name
+  If usrid <> 0 Then 'we have been given a id
+    curresult = getconnection().Exec("Select * From tblusers Where usrid = " & CStr(usrid))
+    If curresult.Count = 0 Then
+        curmessage = "usrid"
+    Endif
+  Else
+    'look up by name
+    curresult = getconnection().Exec("Select * From tblusers Where usrlogin = '" & usrlogin & "'")
+    If curresult.Count = 0 Then
+        curmessage = "login name"
+    Endif
+    
+  
+  Endif
+  
+  If curresult.Count <> 0 Then
+    'we have user
+    'check pass
+    'but first check if we need to check
+    If curresult["usryubionly"] Then
+        'we do not need to check
+        Return True
+    Endif
+    usrpasssalthash = Base64$(Digest["sha256"](usrpass & curresult["usrsalt"]))
+    
+    If usrpasssalthash = curresult["usrpass"] Then
+      'passwords match
+      Return True
+    Else 
+      If curresult["usrpass"] = "" Then
+        Return True 'if password not set
+        
+      Else
+        Message.Error("Invalid password.")
+        Return False
+      Endif
+      
+    Endif
+    
+  Else
+  
+    Message.Error("Invalid " & curmessage)
+    Return False
+    
+    
+  Endif
+  
+  
+  
+End
+Public Sub main()
+  
+  'sets up connection and 
+  
+  
+  
+End
+Public Function getstupic(stupic As String, Optional islarge As Boolean = False) As Picture
+  Dim newpic As New Image
+  Dim curratio As Float
+  Dim curW As Integer
+  Dim curH As Integer
+  Dim picpath As String
+  Dim picpathorg As String
+  
+  
+  
+  'assume portrait
+  
+  
+  
+  
+  'returns a scaled image proportional (event)
+  'try png and jpg
+  'first png using sml image if avail
+  
+  picpath = Replace(basroutines.stupicpath &/ "sml" &/ stupic, ".jpg", ".png") 'always a png for small image
+   
+   'setting original pic
+    
+    picpathorg = Replace(basroutines.stupicpath &/ stupic, ".jpg", ".png")
+    If Not Exist(picpath) Then
+      'try jpg
+      picpathorg = basroutines.stupicpath &/ stupic
+    Endif
+    
+    
+  'check to see if small image has been made
+   'Message.Info(picpath)
+   
+If Exist(picpathorg) Then
+  'we can load image
+  'check if sml image exisits
+  If Not Exist(picpath) Then 'small image path
+    'create  very small image and save
+    curW = 25
+    
+    newpic = image.Load(picpathorg)
+    
+    curratio = newpic.Width / newpic.Height
+    curH = CInt(curW / curratio)
+    'scale image
+    newpic = newpic.Stretch(curW, curH)
+    newpic.Save(picpath)
+    
+    
+  Endif
+  
+  If islarge Then
+      newpic = image.Load(picpathorg)
+      curW = 70
+      
+      'RESIZE
+       curratio = newpic.Width / newpic.Height
+       curH = CInt(curW / curratio)
+       'scale image
+       newpic = newpic.Stretch(curW, curH)
+      
+  Else
+      'just load from file
+      newpic = image.Load(picpath)
+      
+      
+   Endif
+   
+   Return newpic.Picture
+  
+Else
+  
+    Return Null
+    
+  
+    
+Endif
+
+ 
+  
+  
+End
+

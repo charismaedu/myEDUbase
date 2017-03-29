@@ -1,0 +1,66 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,88,34)
+  Background = &H007FFF&
+  Icon = Picture["LogoLg.png"]
+  { PictureBox1 PictureBox
+    MoveScaled(2,1,70,12)
+    Picture = Picture["LogoLg.png"]
+    Stretch = True
+    AutoResize = True
+  }
+  { btnstudents Button
+    MoveScaled(9,12,18,4)
+    Text = Shortcut(("Students"), "S")
+  }
+  { btnclasses Button
+    MoveScaled(28,12,18,4)
+    Text = Shortcut(("Classes"), "C")
+  }
+  { btnstudents3 Button
+    MoveScaled(47,12,18,4)
+    Text = Shortcut(("Accounting"), "A")
+  }
+  { btnholidays Button
+    MoveScaled(66,12,18,4)
+    Text = Shortcut(("Holidays"), "H")
+  }
+  { btnsms Button
+    MoveScaled(9,17,18,4)
+    Text = Shortcut(("SMS"), "S")
+  }
+  { btnexpences Button
+    MoveScaled(28,17,18,4)
+    Text = Shortcut(("Expences"), "E")
+  }
+  { btncatagories Button
+    MoveScaled(47,17,18,4)
+    Text = Shortcut(("Catagories"), "C")
+  }
+  { btntypes Button
+    MoveScaled(66,17,18,4)
+    Text = Shortcut(("Types"), "T")
+  }
+  { btnusers Button
+    MoveScaled(9,22,18,4)
+    Text = Shortcut(("Users"), "U")
+  }
+  { lblver Label
+    MoveScaled(25,30,62,4)
+    Foreground = Color.White
+    Alignment = Align.TopRight
+  }
+  { btnsummery Button
+    MoveScaled(28,22,18,4)
+    Text = ("Summeries")
+  }
+  { btncards Button
+    MoveScaled(47,22,18,4)
+    Text = Shortcut(("Cards"), "C")
+  }
+  { Timer1 #Timer
+    #MoveScaled(74,1)
+    Delay = 100
+  }
+}

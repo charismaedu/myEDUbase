@@ -1,0 +1,38 @@
+# Gambas Form File 3.0
+
+{ Report Report
+  #MoveScaled(0,0,109,65)
+  Font = Font["URW Gothic L"]
+  OnePiece = True
+  Index = 0
+  Text = ("")
+  { ReportLabel1 ReportLabel
+    #MoveScaled(63,0,45,9)
+    Alignment = Align.Right
+  }
+  { ReportImage1 ReportImage
+    #MoveScaled(2,1,33,8)
+    Image = Image.Load("LogoLg.png")
+  }
+  { ReportLabel2 ReportLabel
+    #MoveScaled(3,10,105,10)
+    Font = Font["URW Gothic L,Bold,+7"]
+    Text = ("Official Receipt")
+    Alignment = Align.Center
+  }
+  { recno ReportTextLabel
+    #MoveScaled(88,12,19,8)
+    Brush = ReportBrush["#FF0000"]
+    Font = Font["URW Gothic L,Bold,+4"]
+  }
+  { ReportLabel3 ReportLabel
+    #MoveScaled(82,15,6,5)
+    Font = Font["URW Gothic L"]
+    Text = ("No.:")
+  }
+  { ReportLabel4 ReportLabel
+    #MoveScaled(3,21,17,4)
+    Text = ("Student Name:")
+  }
+  Index = 0
+}

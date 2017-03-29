@@ -1,0 +1,179 @@
+' Gambas class file
+
+
+Public Sub btnpwdchange_Click()
+  Dim oldpassword As String
+   
+      oldpassword = InputBox("Please enter your old password", "Old Password")
+      If basroutines.checkpassword(usrlogin.Value, oldpassword, usrid.Value) Then
+        usrpass.Value = ""
+        usrpass.Visible = True    
+    Endif
+    
+   
+
+  
+
+End
+
+Public Sub bronames_Data(Row As Integer, Column As Integer, Value As Variant)
+
+   usrpass.Visible = False
+   btnupdate.Visible = True
+   
+
+End
+
+Public Sub btnupdate_Click()
+  Dim otp As String
+  Dim doupdate As Boolean
+  Dim ranlen As Integer
+  Dim mysalt As String
+  Dim curletter As String
+  'Dim newpasshashed As String
+  Dim i As Integer
+  
+  
+  
+  doupdate = False
+   'assume no
+
+  
+  If btnupdate.Tag = "new" Then
+    'check if ybikey is valid
+    doupdate = True 'we do no matter what
+    
+  
+    
+  Else
+    'check otp
+    otp = InputBox("Please press your YubiKey for verification.", "YubiKey Code Required")
+    If basroutines.otpcheck(otp, usrid.Value) Then
+      doupdate = True
+    Else 
+      doupdate = False
+      Message.Error("YubiKey Validation Error, please try again!", "OK")
+    Endif
+  Endif
+
+  If usrpass.Visible = True Then
+      
+      If usrpass.Value <> "" Then
+        'hash pwd and update
+        
+        'create salt
+        ranlen = Rand(16, 40)
+         For i = 1 To ranlen
+          'get random letter
+          ' Repeat
+           curletter = Rand(97, 122)
+            'Until curletter <= 122 Or curletter >= 97
+    
+           mysalt = mysalt & Chr$(curletter) 'letters a to z
+    
+         Next  
+        
+        usrsalt.Visible = True
+        
+        usrsalt.Value = mysalt
+        
+        
+        'hash
+       ' newpasshashed = usrpass.Value & usrsalt.Value
+        
+        usrpass.Value = Base64$(Digest["sha256"](usrpass.Value & usrsalt.Value))
+        
+      
+      
+         doupdate = True
+      Else
+        'invalid pwd
+        Message.Error("Invalid Password")
+        doupdate = False
+      Endif
+  Endif
+  
+  If doupdate Then
+    If usrid.Value = "" Then
+      usrid.Value = cnnusers.Count + 1
+    Endif
+  
+    
+      
+    
+      
+    cnnusers.Save
+    'reset
+    btnnew.Visible = True
+    btnupdate.Tag = ""
+    usrsalt.Visible = False
+    usrpass.Visible = False
+    btnpwdchange.Visible = True
+    
+  
+    
+  Endif
+  'use ubikey to update
+  
+  
+
+End
+
+Public Sub btnnew_Click()
+
+  cnnusers.Create
+  btnupdate.Tag = "new"
+  usrpass.Value = ""
+  
+  btnpwdchange.Visible = False
+ usrpass.Visible = True
+ usrpass.Value = "s"
+ usrpass.Value = ""
+ 
+  
+  btnnew.Visible = False
+  If cnnusers.Count = 0 Then
+    usrlevel.Value = 1
+  Endif
+  Me.Refresh
+End
+
+Public Sub btncheckyubi_Click()
+
+  If basroutines.otpcheck(usryubikey.Value) Then
+    Message.Info("YubiKey is valid.")
+    btncheckyubi.Visible = False
+    btnupdate.Visible = True
+  Else
+    Message.Info("YubiKey is invalid or out of date.")
+  Endif
+
+End
+
+Public Sub usryubikey_KeyPress()
+
+  btncheckyubi.Visible = True
+  btnupdate.Visible = False
+  
+  
+
+End
+
+
+
+Public Sub usrlevel_KeyPress()
+
+ 
+
+End
+
+Public Sub Form_Open()
+
+  cnnusers.Connection = basroutines.getconnection()
+  Try cnnusers.MoveFirst()
+  usrpass.Visible = False
+  
+  
+
+End
+

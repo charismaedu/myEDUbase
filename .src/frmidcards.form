@@ -1,0 +1,65 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,112,77)
+  Font = Font["URW Gothic L"]
+  Background = &H007FFF&
+  Text = ("Charisma DB - Export Student Cardsudent")
+  { Label1 Label
+    MoveScaled(4,3,45,6)
+    Font = Font["URW Gothic L,Bold,+6"]
+    Text = ("Student Cards")
+  }
+  { Label2 Label
+    MoveScaled(3,2,45,6)
+    Font = Font["URW Gothic L,Bold,+6"]
+    Foreground = Color.White
+    Text = ("Student Cards")
+  }
+  { cnnstucards DataSource
+    MoveScaled(5,12,104,58)
+    Table = "sql_idcards"
+    { brstucards DataBrowser
+      MoveScaled(2,3,48,53)
+      Control = False
+      Columns = ["stuid", "stuengfamname"]
+    }
+    { stuname DataControl
+      MoveScaled(55,12,43,6)
+      Field = "stuengfamname"
+    }
+    { stuid DataControl
+      MoveScaled(88,4,10,5)
+      Field = "stuid"
+    }
+    { studob DataControl
+      MoveScaled(55,23,43,6)
+      Field = "studob"
+    }
+    { stupic PictureBox
+      MoveScaled(67,33,17,19)
+      Stretch = True
+      Border = Border.Etched
+    }
+    { Label3 Label
+      MoveScaled(55,7,24,4)
+      Text = ("Nsme:")
+    }
+    { Label4 Label
+      MoveScaled(55,18,24,4)
+      Text = ("Date of Birth")
+    }
+  }
+  { chkallcurrent CheckBox
+    MoveScaled(79,6,28,4)
+    Text = Shortcut(("All current"), "A")
+  }
+  { btnexport Button
+    MoveScaled(87,71,20,4)
+    Text = Shortcut(("Export"), "E")
+  }
+  { chkremove CheckBox
+    MoveScaled(58,71,24,4)
+    Text = ("Remove Flag")
+  }
+}

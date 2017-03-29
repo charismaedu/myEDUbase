@@ -1,0 +1,15 @@
+' Gambas class file
+
+
+Public Sub Form_Open()
+Dim primmon As Integer
+
+primmon = Screens.Count - 1
+
+
+
+'Me.Move(Screens[primmon].X, Screens[primmon].Y, Screens[primmon].Width, Screens[primmon].Width)
+Me.Move(Desktop.X, Desktop.Y, Desktop.Width, Desktop.Height)
+
+
+End

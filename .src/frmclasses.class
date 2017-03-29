@@ -1,0 +1,265 @@
+' Gambas class file
+
+Private clscnn As Connection
+
+
+
+Public Sub Form_Open()
+cnnclasses.Connection = basroutines.getconnection()
+'cnnclasses.Table = "SELECT * FROM tblclasses ORDER BY dayid,clstime" 
+cnnclasses.Sort = "clstime"
+cnnclasses.MoveFirst
+End
+
+Public Sub btnnew_Click()
+
+  cnnclasses.Create
+  clsid.Value = cnnclasses.Count + 1
+  btnsave.Tag = "new"
+  btnnew.Visible = False
+  
+  
+
+End
+
+Public Sub btnsave_Click()
+  clslastmodified.Value = Now
+  cnnclasses.Save
+  If btnsave.tag = "new"
+    cnnclasses.MoveLast
+    
+  End If
+  btnnew.Visible = True
+  btnsave.Tag = ""
+  
+
+End
+
+Public Sub cnnclasses_MouseDown()
+
+  
+
+End
+
+Public Sub DataBrowser1_Data(Row As Integer, Column As Integer, Value As Variant)
+
+ 
+
+End
+
+Public Sub cnnclasses_Change()
+
+  
+
+End
+
+Private Sub displaystu()
+  
+  Dim cnnclsstu As Result
+  Dim stusql As String
+  Dim addtext As String
+  
+  tvstu.Clear
+  stusql = "Select s.stuengfamname, clsid, s.stuid, s.sturendate, s.stupic  From tblclsstudent stu Inner JOIN tblstudents s ON stu.stuid = s.stuid Where clsid = " & CStr(clsid.value) & " And current = 1"
+'  Print stusql
+  Try cnnclsstu = basroutines.getconnection().Exec(stusql)
+ ' Print cnnclsstu.Count
+  
+  If Not Error Then
+    For Each cnnclsstu
+      addtext = cnnclsstu["stuengfamname"] & ": "
+      If Not IsNull(cnnclsstu["sturendate"]) Then
+        addtext = addtext & Format$(cnnclsstu["sturendate"], "dd mmm yy")
+      
+      Endif
+      tvstu.Add(cnnclsstu["stuid"], addtext, basroutines.getstupic(cnnclsstu["stupic"]))
+        
+      
+    Next
+  End If  
+  
+  
+End
+
+
+Public Sub DataBrowser1_MouseUp()
+
+   displaystu()
+
+End
+
+Public Sub DataBrowser1_KeyPress()
+
+  displaystu()
+
+End
+
+Public Sub tvstu_Select()
+
+  'open
+
+End
+
+Public Sub tvstu_DblClick()
+
+  'open student form
+  frmstudents.Show
+  frmstudents.txtsearch.Text = tvstu.Key
+  frmstudents.tvfindstudents()
+  frmstudents.tvstudents.MoveFirst
+  frmstudents.tvstudents.Item.Selected = True
+  
+  
+  
+
+End
+
+' Public Sub btntoday_Click()
+' 
+'   If btntoday.Value Then
+'     'set filter to today
+'     cnnclasses.Filter = "dayid = " & CStr(WeekDay(Now))
+'     'Message(cnnclasses.Filter)
+'   Else 
+'     cnnclasses.Filter = ""
+'   Endif
+' 
+' End
+
+Public Sub radday_Click()
+
+  Select Case Last.Text
+    Case "Mon"
+      cnnclasses.Filter = "dayid = 1"
+    Case "Tue"
+      cnnclasses.Filter = "dayid = 2"
+    
+    Case "Wed"
+      cnnclasses.Filter = "dayid = 3"
+    Case "Thu"
+      cnnclasses.Filter = "dayid = 4"
+    Case "Fri"
+      cnnclasses.Filter = "dayid = 5"
+    Case "Sat"
+      cnnclasses.Filter = "dayid = 6"
+    Case "Sun"
+      cnnclasses.Filter = "dayid = 7"
+    Case "All"
+      cnnclasses.Filter = ""
+  End Select
+  
+  If chkcurrent.Value = True Then
+    If cnnclasses.filter = "" Then
+      cnnclasses.Filter = "clscurrent =1"  
+    Else
+      cnnclasses.Filter = cnnclasses.Filter & " and clscurrent =1"
+    Endif
+    
+    
+  Endif
+  
+  Try cnnclasses.MoveFirst()
+
+tvstu.Clear
+End
+
+Public Sub chkcurrent_Click()
+
+  
+
+End
+
+Public Sub tvstu_Click()
+
+
+End
+
+Public Sub btnattend_Click()
+
+  'adds an attendace record for class
+  'check that not already added
+  
+  'add record as ness
+  
+  'check if selected as attended
+  
+  'check if a mistake
+  
+  'get reason for absent person
+  
+  
+
+End
+
+Public Sub btnall_Click()
+
+  tvstu.SelectAll 
+  
+
+End
+
+Public Sub btntrf_Click()
+  Dim curclass As Integer
+  Dim curesponse As Integer
+  Dim newrecord As Result
+  Dim newclass As Integer
+  Dim cursql As String
+  Dim curclsstudents As Result
+  'Dim up
+  
+  
+  
+  'confirm creation
+  curesponse = Message.Question("Do wish to create a new class and trasnsfer existing students?", "Yes", "No")
+
+If curesponse = 1 Then
+   'save current class no
+  
+  curclass = clsid.Value
+
+  'save as a new record
+  newrecord = basroutines.getconnection().Create("tblclasses")
+    'add record
+    newclass = cnnclasses.Count + 1
+    newrecord["clsid"] = newclass
+    newrecord["clsname"] = clsname.Value
+    newrecord["clslevel"] = clslevel.Value
+    newrecord["dayid"] = dayid.Value
+    newrecord["clstime"] = clstime.Value
+    newrecord["clslen"] = clslen.Value
+    newrecord["clsdescription"] = clsdescription.Value
+    newrecord["clscurrent"] = clscurrent.Value
+    newrecord["clslastmodified"] = clslastmodified.Value
+   
+  newrecord.Update() 
+  
+  
+  'mark old one as not current
+  'cursql = "Update tblclasses clscurrent = 0 Where clsid = curclass" 
+  'basroutines.getconnection().Exec(cursql)
+  clscurrent.Value = False
+  cnnclasses.Update
+  
+  
+  
+  
+  'trf students to new class
+  
+  'select students
+  cursql = "Select clsid, s.stuid From tblclsstudent stu Inner JOIN tblstudents s ON stu.stuid = s.stuid Where clsid = " & CStr(clsid.value) & " And current = 1"
+  
+  
+  'remove students from old class
+ 
+Endif
+  
+  
+  
+
+End
+
+Public Sub DataBrowser1_MouseDown()
+
+  
+
+End

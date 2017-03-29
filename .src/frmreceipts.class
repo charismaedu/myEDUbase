@@ -1,0 +1,481 @@
+' Gambas class file
+
+Private adddate As Boolean
+Private curdate As String
+
+Public Sub Label2_MouseDown()
+
+  
+
+End
+
+Public Sub Label4_MouseDown()
+
+
+
+End
+
+Public Sub DateChooser1_Change()
+  
+  
+  If adddate Then
+    ' 'add date to box, ONLY IF CLICKED
+    ' curdate = Format$(DateChooser1.Value, "dd-mm") & ", " 
+    ' recdates.Selection.Text = curdate
+    ' recdates.Tag = DateChooser1.Value
+    
+    'New Date clac
+   adddates() 
+    
+    CalReciept  
+  Endif
+  
+  adddate = True 'on load do not update date
+End
+
+Private Sub adddates()
+  Dim noless As Integer
+  Dim curless As Integer
+  Dim alldates As String
+  Dim nextdate As Date
+  Dim isvalid As Boolean
+  Dim curResult As Result
+  Dim holdays As String
+  
+  
+  
+  'auto add dates base 
+  'On no Of lessons starting With the current Date
+  
+  'add dates but check for holidays
+  'clear cur dates
+  recdates.Text = ""
+  alldates = ""
+  noless = Val(recnolessons.Text)
+  
+  For curless = 1 To noless
+    If curless = 1 Then 'just use starting date
+      nextdate = DateChooser1.Value
+    Else
+      'add a week
+      nextdate = DateAdd(nextdate, gb.Week, 1)
+    End If
+    'check if holiday and adjust accordingly
+    isvalid = False
+    Repeat
+      'look up date in holidays
+      curResult = basroutines.getconnection().Exec("Select * from tblholidays Where holdate ='" & Format$(nextdate, "yyyy-mm-dd hh:nn:ss") & "'")
+      If curResult.Count <> 0 Then
+        'add hol to other info
+        If holdays <> "" Then
+          'add cooma
+          holdays = holdays & ", "
+          
+        Endif
+        curdate = Format$(nextdate, "dd-mm")  
+        holdays = holdays & curdate & " " & curResult["holdescription"]
+        'holiday try next week
+        nextdate = DateAdd(nextdate, gb.Week, 1)
+      Else
+        isvalid = True 'no holday good date
+      End If
+      
+    Until isvalid
+    
+      
+      
+      'add date to list
+      If alldates <> "" Then 'add comma
+        alldates = alldates & ", "
+      End If
+      
+      curdate = Format$(nextdate, "dd-mm")  
+      alldates = alldates & curdate
+      
+      
+  Next
+    recdates.Tag = nextdate
+    recdates.Text = alldates
+   recmessage.Text = holdays
+  
+  
+End
+
+
+
+
+Public Sub recdates_Change()
+
+  'update count
+  ' Dim curcount As Integer
+  ' curcount = Split(recdates.Text, ",").Count
+  ' recnolessons.Text = curcount
+  ' If curcount >= 8 Then 
+  '     If Val(recdis.Text) = 0 Then recdis.Text = "10"
+  ' Else 
+  '   If Val(recdis.Text) = 10 Then recdis.Text = "0"
+  ' Endif
+  
+
+End
+
+Public Sub btnsave_Click()
+  Dim curRS As Result
+  Dim curID As Integer 
+  Dim stucnn As Connection
+  Dim rendate As Date
+  Dim uSQL As String
+  Dim curRenDate As Date
+  Dim mymessage As String
+  
+  
+  
+  stucnn = basroutines.getconnection()
+  
+  'get incremented ID
+  curRS = stucnn.Exec("Select recid From tblreceipts Order By recid")
+  If curRS.Count = 0 Then
+    curID = 1
+  Else
+    curRS.MoveLast
+    curID = curRS["recid"] + 1
+    curRS = Null
+  Endif
+  
+
+  
+  
+  'Add to table #need to do more latter
+  curRS = stucnn.Create("tblreceipts")
+    'add
+    'field list "recid" INT4 NOT NULL , "recdate" DATETIME, "recstuid" INT4, "recstuname" TEXT, "recnumber" TEXT, "reccourse" TEXT, "recdates" TEXT, "recnolessons" INT4,
+    ' "recrate" FLOAT8, "recdis" FLOAT8, "reccourseamt" FLOAT8, "recoth" TEXT, "reothdis" FLOAT8, "recothamt" TEXT, "rectotal" FLOAT8, "recchq" TEXT Not Null Default 'cash', "reccc" BOOL, "recccauth" TEXT, "recnotes" TEXT, PRIMARY KEY ("recid") )
+    
+    curRS["recid"] = curID
+    curRS["recdate"] = recdate.Value
+    curRS["recstuid"] = recstuid.Text
+    curRS["recnumber"] = recnumber.Text
+    curRS["reccourse"] = reccourse.Text
+    curRS["recdates"] = recdates.Text
+    curRS["recnolessons"] = recnolessons.Text
+    curRS["recrate"] = recrate.Text
+    curRS["recdis"] = recdis.Text
+    curRS["reccourseamt"] = reccourseamt.Text
+    curRS["recoth"] = recoth.Text
+    curRS["recmessage"] = recmessage.Text
+    curRS["recothdis"] = recdiscoth.Text
+    curRS["recothamt"] = recothamt.Text
+    curRS["rectotal"] = rectotal.Text
+    If Val(recchq.Text) = 0 Then
+        'cash
+        curRS["recchq"] = "Cash"
+   Else
+         curRS["recchq"] = "Cheque No: " & recchq.Text
+    Endif
+    
+    
+    curRS["recrendate"] = recdates.Tag
+    
+    
+    
+  curRS.Update
+  'check if renwal date set if nit check that it is nit newer - in case inoutting and old receipt
+  Try curRenDate = recstuname.Tag
+  
+  If IsNull(curRenDate) Then
+    'update to curdate
+    curRenDate = recdates.Tag
+    Else
+      
+      If recdates.Tag > curRenDate Then ' we have entred reciept the supceedes this one
+        curRenDate = recdates.Tag
+      Endif
+  
+    
+  Endif
+  If chkupdateren.Value = True Then 
+  'add last date to student rec
+   uSQL = "stuid = " & recstuid.Text
+    curRS = stucnn.Edit("tblstudents", uSQL)
+  
+  curRS["sturendate"] = curRenDate
+  curRS.Update
+  End If
+  'now update refund
+  If chkqapplyrefund.Value = True Then
+    
+  Endif
+    'update students credit field
+    
+    
+  'now create receipt
+  'basroutines.printreceipt(curID)
+  'send sms
+  'set up message,
+  mymessage = "RecNo " & recnumber.Text & " For " & recstuname.Text & " " & gb.Cr
+  mymessage = mymessage & "Course - " & Replace(reccourse.Text, ":", "-") & " No Lessons - " & recnolessons.Text & " Rate $" & recrate.Text & " Dis " & recdis.Text & " Total $" & reccourseamt.Text & " " & gb.Cr 
+  mymessage = mymessage & "Dates - " & recdates.Text & gb.Cr
+  If recoth.Text <> "" Then 'we  have an other amount
+    mymessage = mymessage & "OthDet " & recoth.Text & " Gross: " & gross2.text & " Dis " & recdiscoth.text & " Total " & recothamt.Text & gb.Cr
+  End If
+  mymessage = mymessage & "Reciept Tot -  " & rectotal.Text & " " & gb.CrLf
+  mymessage = mymessage & recmessage.Text
+    
+  sendsms(recstuid.tag, mymessage)
+    
+  Me.Close
+    
+    
+
+End
+
+
+Private Sub CalReciept()
+  
+  gross.Text = CStr(Val(recnolessons.Text) * Val(recrate.Text))
+ reccourseamt.Text = CStr(Val(gross.Text) * (1 - (Val(recdis.Text) / 100))) 
+ 'Message((Val(recdis.Text) / 100))
+  recothamt.Text = CStr(Val(gross2.Text) * (1 - (Val(recdiscoth.Text) / 100)))
+  rectotal.Text = CStr(Val(reccourseamt.Text) + Val(recothamt.Text)) - Val(recrefund.text)
+  
+End
+
+Public Sub recrate_MouseDown()
+
+  'CalReciept
+
+End
+
+Public Sub recrate_LostFocus()
+
+  CalReciept
+   
+
+End
+
+
+
+
+Public Sub recdis_LostFocus()
+
+  CalReciept
+
+End
+
+Public Sub recdiscoth_LostFocus()
+
+  CalReciept
+
+End
+
+Public Sub gross2_LostFocus()
+
+  CalReciept
+
+End
+
+
+
+
+Public Sub Form_Open()
+  adddate = False
+  DateChooser1.Value = DateChooser1.Value - 1
+  curdate = ""
+  
+  'set dates
+  recdate.Value = Now
+  
+  'set recnumber
+  recnumber.Text = getreceiptno()
+  
+  'set col width
+  cnnclass.Connection = basroutines.getconnection()
+  cnnclass.Table = "tblclasses"
+  cnnclass.Sort = "clstime"
+  cnnclass.Ascending = True
+  cnnclass.Update
+  
+End
+
+Public Sub Label1_MouseDown()
+
+  
+
+End
+
+Public Sub cbotime_Click()
+
+  
+
+End
+
+Public Sub cbocourse_Change()
+  Dim dayid As Integer
+  'reccourse.Text = cboday.Text & " " & cbotime.Text & ", " & cboclass.Text
+  Select Case cboday.Text
+    Case "Monday"
+      dayid = 1
+    Case "Tuesday"
+       dayid = 2
+    Case "Wednesday"
+       dayid = 3
+    Case "Thursday"
+       dayid = 4
+    Case "Friday"
+       dayid = 5
+    Case "Saturday"
+       dayid = 6
+    Case "Sunday"
+       dayid = 7
+  End Select
+  cnnclass.Filter = "dayid = " & CStr(dayid) 
+  reccourse.Text = cboday.Text & " " & clstime.Value & ", " & clsname.Value
+  
+
+End
+
+Public Sub recnolessons_MouseDown()
+
+  
+
+End
+
+Public Sub recnolessons_Change()
+
+   If Val(recnolessons.Text) >= 8 Then 
+       If Val(recdis.Text) = 0 Then recdis.Text = "10"
+   Else 
+     If Val(recdis.Text) = 10 Then recdis.Text = "0"
+   Endif
+  
+  
+  adddates
+
+End
+
+Private Sub calcrefund() 
+  
+  'calculates refund
+  
+  'look up balance 
+  
+  'check to see if refund not greater than balance
+  
+  
+End
+
+
+Public Sub grpreceived_Change()
+
+  rectotalrec.Text = CStr(Val(recamtchq.Text) + Val(recamtcash.Text))
+  
+
+End
+
+Public Sub rectotalrec_Change()
+
+  rectotalchange.Text = CStr(Val(rectotal.Text) - Val(rectotalrec.Text))
+
+End
+
+Public Sub recdate_MouseDown()
+
+  
+
+End
+
+Public Sub Button1_Click()
+  
+rptrec.Preview()
+End
+
+Private Sub sendsms(smsto As String, mymessage As String)
+  Dim cursmsfrm As New Frmsms
+  
+    cursmsfrm.txtto.Text = smsto
+    cursmsfrm.txtto.Tag = recstuid.Text
+    cursmsfrm.txtmessage.Text = mymessage
+    cursmsfrm.ShowModal()
+      
+   
+  
+End
+
+Public Sub cbocourse_Click()
+
+  
+
+End
+Private Function getreceiptno() As String
+  
+    'gets reciept no
+  'we autonumber prefix with CHA
+  
+  Dim curSQL As String
+  Dim prefix As String
+  Dim curResult As Result
+  Dim recnumber As String
+  Dim nextnum As Integer
+  'Dim curcnn As Connection
+  
+  
+  
+  
+  prefix = "CHA" & Format$(Now, "yy")
+  
+  
+  'open the reciept table and get
+  curSQL = "Select recnumber From tblreceipts Where recnumber Like '" & prefix & "%' Order By recnumber"
+  'curcnn = basroutines.getconnection()
+  curResult = basroutines.getconnection().Exec(curSQL)
+  
+  If curResult.Count <> 0 Then 'check last and retrive last
+    curResult.MoveLast
+    recnumber = curResult["recnumber"]
+  Else
+    recnumber = prefix & "9999" 'one less so the conter works
+  End If
+    
+  nextnum = Val(Replace(recnumber, prefix, "")) + 1 'removes the prefix and increments the number
+  
+  recnumber = prefix & nextnum
+  
+  
+  
+  
+  Return recnumber
+  
+  
+    
+      
+  
+  
+End
+
+
+Public Sub recdates_KeyPress()
+
+  
+
+End
+
+Public Sub Label15_MouseDown()
+
+  
+
+End
+
+Public Sub broclass_Data(Row As Integer, Column As Integer, Value As Variant)
+
+  'update course
+  reccourse.Text = cboday.Text & ", " & clstime.Value & ", " & clsname.Value
+  
+  
+
+End
+
+Public Sub chkqapplyrefund_Click()
+
+  
+
+End

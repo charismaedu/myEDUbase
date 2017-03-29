@@ -1,0 +1,93 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,65,44)
+  Font = Font["URW Gothic L"]
+  Background = &H007FFF&
+  Icon = Picture["LogoLg.png"]
+  Resizable = False
+  Arrangement = Arrange.Vertical
+  Spacing = True
+  Margin = True
+  { Panel3 Panel
+    MoveScaled(2,1,60,9)
+    Arrangement = Arrange.Horizontal
+    { PictureBox1 PictureBox
+      MoveScaled(2,1,36,9)
+      Picture = Picture["LogoLg.png"]
+      Stretch = True
+    }
+    { Label4 Label
+      MoveScaled(33,1,25,7)
+      Font = Font["Bold,+8"]
+      Foreground = Color.White
+      Text = ("Login")
+      Alignment = Align.Center
+    }
+  }
+  { Panel2 Panel
+    MoveScaled(2,12,60,24)
+    { Label1 Label
+      MoveScaled(1,1,13,4)
+      Font = Font["Bold"]
+      Foreground = Color.White
+      Text = ("Login:")
+    }
+    { Label2 Label
+      MoveScaled(1,7,11,4)
+      Font = Font["Bold"]
+      Foreground = Color.White
+      Text = ("Password:")
+    }
+    { Label3 Label
+      MoveScaled(1,19,11,4)
+      Font = Font["Bold"]
+      Foreground = Color.White
+      Text = ("YubiKey:")
+    }
+    { txtlogin TextBox
+      MoveScaled(13,1,46,4)
+    }
+    { txtpwd TextBox
+      MoveScaled(13,7,46,4)
+      Password = True
+    }
+    { txtyubikey TextBox
+      MoveScaled(13,19,46,4)
+      Password = True
+    }
+    { picyubikeylogo PictureBox
+      MoveScaled(13,13,20,5)
+      Picture = Picture["Yubico-Logo-Big.png"]
+      Stretch = True
+    }
+    { picyubikey PictureBox
+      MoveScaled(35,12,9,6)
+      Picture = Picture["YubiKey-Standard-in-Laptop-with-Finger-444x249.jpg"]
+      Stretch = True
+    }
+  }
+  { HBox1 HBox
+    MoveScaled(2,36,62,4)
+    Spacing = True
+    { Panel1 Panel
+      MoveScaled(4,0,4,4)
+      Expand = True
+    }
+    { btnOK Button
+      MoveScaled(29,0,16,4)
+      Text = ("OK")
+      Default = True
+    }
+    { btnCancel Button
+      MoveScaled(46,0,16,4)
+      Text = ("Cancel")
+      Cancel = True
+    }
+  }
+  { lblver Label
+    MoveScaled(2,40,62,4)
+    Foreground = Color.White
+    Alignment = Align.TopRight
+  }
+}

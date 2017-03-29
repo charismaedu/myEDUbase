@@ -1,0 +1,283 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,111,85)
+  Font = Font["URW Gothic L"]
+  Background = &H007FFF&
+  Icon = Picture["LogoLg.png"]
+  { Label1 Label
+    MoveScaled(2,1,25,5)
+    Font = Font["URW Gothic L,Bold,+6"]
+    Text = ("Receipt")
+  }
+  { DateChooser1 DateChooser
+    MoveScaled(81,2,28,25)
+    NoTabFocus = True
+  }
+  { Label2 Label
+    MoveScaled(3,6,11,3)
+    Text = ("Student ID:")
+  }
+  { !recstuname TextBox
+    MoveScaled(20,8,52,4)
+    #Public = True
+  }
+  { Label3 Label
+    MoveScaled(20,5,39,4)
+    Text = ("Student Name:")
+  }
+  { Label4 Label
+    MoveScaled(4,14,15,3)
+    Text = ("Course Details:")
+  }
+  { reccourse TextArea
+    MoveScaled(3,30,73,5)
+    Wrap = True
+    ScrollBar = Scroll.Vertical
+  }
+  { recdates TextArea
+    MoveScaled(3,38,43,9)
+    Wrap = True
+    ScrollBar = Scroll.Vertical
+  }
+  { Label5 Label
+    MoveScaled(3,35,37,3)
+    Text = ("Dates:")
+  }
+  { recnolessons ValueBox
+    MoveScaled(79,30,7,4)
+  }
+  { Label6 Label
+    MoveScaled(79,28,7,2)
+    Text = ("No:")
+    Alignment = Align.Right
+  }
+  { Label7 Label
+    MoveScaled(87,28,8,2)
+    Text = ("Rate:")
+    Alignment = Align.Right
+  }
+  { recrate ValueBox
+    MoveScaled(87,30,8,4)
+    Text = ("recrate")
+  }
+  { Label8 Label
+    MoveScaled(97,27,11,3)
+    Text = ("Amount:")
+    Alignment = Align.Right
+  }
+  { gross ValueBox
+    MoveScaled(96,30,12,4)
+    Text = ("0")
+    ReadOnly = True
+  }
+  { recdis ValueBox
+    MoveScaled(87,35,8,4)
+    Text = ("ValueBox1")
+  }
+  { Label9 Label
+    MoveScaled(4,48,16,3)
+    Text = ("Other:")
+  }
+  { recoth TextArea
+    MoveScaled(3,51,73,5)
+    Wrap = True
+    ScrollBar = Scroll.Vertical
+  }
+  { Label12 Label
+    MoveScaled(83,48,11,3)
+    Text = ("Amount:")
+    Alignment = Align.Right
+  }
+  { recdiscoth ValueBox
+    MoveScaled(87,52,8,4)
+  }
+  { recothamt ValueBox
+    MoveScaled(96,52,12,4)
+    Text = ("0")
+    ReadOnly = True
+  }
+  { Label10 Label
+    MoveScaled(80,35,6,4)
+    Text = ("Disc:")
+  }
+  { reccourseamt ValueBox
+    MoveScaled(96,35,12,4)
+    Text = ("0")
+    ReadOnly = True
+  }
+  { !rectotal ValueBox
+    MoveScaled(86,68,22,4)
+    #Public = True
+    Font = Font["Bold,+2"]
+    Foreground = Color.Blue
+    Text = ("0")
+    ReadOnly = True
+    Border = False
+  }
+  { recnumber TextBox
+    MoveScaled(20,1,17,4)
+  }
+  { btnsave Button
+    MoveScaled(4,78,20,4)
+    Text = Shortcut(("Save"), "S")
+  }
+  { recchq ValueBox
+    MoveScaled(13,67,14,4)
+    Text = ("ValueBox2")
+  }
+  { Label11 Label
+    MoveScaled(4,67,10,4)
+    Text = ("Chq No:")
+  }
+  { Label13 Label
+    MoveScaled(81,52,6,4)
+    Text = ("Disc:")
+  }
+  { recdate DateBox
+    MoveScaled(47,1,22,4)
+  }
+  { gross2 ValueBox
+    MoveScaled(96,47,12,4)
+    Text = ("0")
+  }
+  { !recstuid TextBox
+    MoveScaled(3,9,11,4)
+    #Public = True
+  }
+  { cboday ComboBox cbocourse
+    Name = "cboday"
+    MoveScaled(28,13,24,4)
+    List = [("Monday"), ("Tuesday"), ("Wednesday"), ("Thursday"), ("Friday"), ("Saturday"), ("Sunday")]
+  }
+  { Label14 Label
+    MoveScaled(21,13,8,4)
+    Text = ("Day")
+  }
+  { Label15 Label
+    MoveScaled(69,13,6,4)
+    Text = ("Class:")
+  }
+  { Label16 Label
+    MoveScaled(3,73,12,4)
+    Text = ("Amt Chq:")
+  }
+  { recamtchq ValueBox grpreceived
+    Name = "recamtchq"
+    MoveScaled(13,73,17,4)
+  }
+  { Label17 Label
+    MoveScaled(31,73,12,4)
+    Text = ("Amt Cash:")
+  }
+  { recamtcash ValueBox grpreceived
+    Name = "recamtcash"
+    MoveScaled(42,73,17,4)
+  }
+  { Label18 Label
+    MoveScaled(73,68,11,4)
+    Text = ("Total:")
+    Alignment = Align.Right
+  }
+  { Label19 Label
+    MoveScaled(64,73,20,4)
+    Text = ("Total Recieved:")
+    Alignment = Align.Right
+  }
+  { !rectotalrec ValueBox
+    MoveScaled(86,73,22,4)
+    #Public = True
+    Font = Font["Bold,+2"]
+    Foreground = Color.Blue
+    Text = ("0")
+    ReadOnly = True
+    Border = False
+  }
+  { Label20 Label
+    MoveScaled(61,78,23,4)
+    Text = ("Change:")
+    Alignment = Align.Right
+  }
+  { !rectotalchange ValueBox
+    MoveScaled(86,78,22,4)
+    #Public = True
+    Font = Font["Bold,+2"]
+    Foreground = Color.Blue
+    Text = ("0")
+    ReadOnly = True
+    Border = False
+  }
+  { chkupdateren CheckBox
+    MoveScaled(29,68,28,4)
+    Text = ("Update Renewal Date")
+    Value = CheckBox.True
+  }
+  { Button1 Button
+    MoveScaled(30,78,16,4)
+  }
+  { cnnclass DataSource
+    MoveScaled(2,17,76,13)
+    Table = "tblclasses"
+    { clsid DataControl
+      MoveScaled(-34.5714,1,10,4)
+      Field = "clsid"
+    }
+    { clsname DataControl
+      MoveScaled(-34.5714,1,16,4)
+      Field = "clsname"
+    }
+    { clstime DataControl
+      MoveScaled(-34.5714,1,18,4)
+      Field = "clstime"
+    }
+    { broclass DataBrowser
+      MoveScaled(1,1,73,11)
+      Control = False
+      CanCreate = False
+      CanDelete = False
+      Columns = ["clstime", "clsname"]
+      Labels = ["Time:", "Class:"]
+    }
+  }
+  { Label21 Label
+    MoveScaled(3,57,8,3)
+    Text = ("Notes:")
+  }
+  { recmessage TextArea
+    MoveScaled(3,60,105,6)
+    ScrollBar = Scroll.Vertical
+  }
+  { frcrrefund Frame
+    MoveScaled(47,39,62,7)
+    Text = ("Credit Refund")
+    { recrefund ValueBox
+      MoveScaled(48,2,13,4)
+      ReadOnly = True
+    }
+    { stucredit ValueBox
+      MoveScaled(26,2,15,4)
+      ReadOnly = True
+    }
+    { Label22 Label
+      MoveScaled(19,2,6,4)
+      Text = ("Cr Bal:")
+    }
+    { Label23 Label
+      MoveScaled(42,2,5,4)
+      Text = ("Less:")
+      Alignment = Align.Right
+    }
+    { chkqapplyrefund CheckBox
+      MoveScaled(1,2,16,4)
+      Text = ("Apply refund")
+    }
+  }
+  { chkprepayment CheckBox
+    MoveScaled(17,56,58,4)
+    Text = ("This is a prepayment.")
+  }
+  { chkaddtocr CheckBox
+    MoveScaled(56,68,19,4)
+    Text = ("Add as Credit")
+  }
+}

@@ -1,0 +1,41 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,86,82)
+  Background = &H007FFF&
+  { cnnhols DataSource
+    MoveScaled(1,1,83,80)
+    Table = "tblholidays"
+    { holdate DataControl
+      MoveScaled(41,17,31,4)
+      Field = "holdate"
+    }
+    { holdescription DataControl
+      MoveScaled(36,1,45,24)
+      Field = "holdescription"
+    }
+    { DateChooser1 DateChooser
+      MoveScaled(2,1,33,24)
+    }
+    { btnsave Button
+      MoveScaled(65,26,16,4)
+      Text = Shortcut(("Save"), "S")
+    }
+    { holid DataControl
+      MoveScaled(2,26,10,4)
+      Field = "holid"
+    }
+    { btnnew Button
+      MoveScaled(48,26,16,4)
+      Text = Shortcut(("New"), "N")
+    }
+    { DataBrowser1 DataBrowser
+      MoveScaled(3,33,78,45)
+      CanCreate = False
+    }
+    { btnimport Button
+      MoveScaled(31,26,16,4)
+      Text = Shortcut(("Import HK Hols"), "I")
+    }
+  }
+}

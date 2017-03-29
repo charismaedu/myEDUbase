@@ -1,0 +1,8 @@
+# Gambas Form File 3.0
+
+{ Report Report
+  #MoveScaled(0,0,100,47)
+  Index = 0
+  Text = ("")
+  Index = 0
+}

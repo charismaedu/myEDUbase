@@ -1,0 +1,15 @@
+create export form for student cards
+
+add buttion in classes to migrate/upgrade class - 
+  - creates a new record with current detail
+  - add all students from the old class
+  - removes studentsw from original class
+  - markes old class as not current
+  
+reciepts add no lessons to students class
+attendance deducts one class fom student
+
+  on student form add button to toggle from current to all classes
+  
+
+  

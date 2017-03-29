@@ -1,0 +1,4 @@
+Select Distinct s.stuid , LPAD(s.stuid,8,"0") as stubarcode, s.stuengfamname,  DATE_FORMAT(s.studob, '%d %b %y') as studob, 
+concat("/home/steven-charisma/ownCloud/documents/Database/Student Cards/Student Photos/",s.stupic) as stupic
+From tblstudents s Inner Join tblclsstudent c ON s.stuid = c.stuid
+Where c.current = 1 and s.stuprint = -1
